@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/buttons_layout"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical" >
+    
+   	<!-- CONTROL BUTTONS -->
+       
+   <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+	    <ImageView
+	        android:id="@+id/button_previous"
+	        android:contentDescription="button_previous"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_previous" />
+	        
+	    <ImageView
+	        android:id="@+id/button_rewind"
+	        android:contentDescription="button_rewind"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_rewind" />
+	        
+	    <ImageView
+	        android:id="@+id/button_play"
+	        android:contentDescription="button_play"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_play_over_video" />
+	        
+	    <ImageView
+	        android:id="@+id/button_pause"
+	        android:contentDescription="button_pause"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_pause_over_video" />
+	        
+	    <ImageView
+	        android:id="@+id/button_forward"
+	        android:contentDescription="button_forward"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_fast_forward" />
+	        
+		<ImageView	
+	        android:id="@+id/button_next"
+	        android:contentDescription="button_next"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/av_next" />
+	    
+    </LinearLayout>
+    
+    <!-- NAVIGATION BUTTONS -->
+    
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+
+            <ImageView
+		        android:contentDescription="button_empty_nw"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" />
+            
+            <ImageView	
+		        android:id="@+id/button_up"
+		        android:contentDescription="button_up"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1"
+		        android:src="@drawable/navigation_collapse" />
+            
+            <ImageView	
+		        android:contentDescription="button_empty_ne"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" />
+		        
+        </LinearLayout>
+        
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/button_left"
+		        android:contentDescription="button_left"
+		        android:layout_gravity="right"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" 
+		        android:src="@drawable/navigation_previous_item" />
+            
+            <ImageView	
+		        android:id="@+id/button_select"
+		        android:contentDescription="button_select"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1"
+		        android:src="@drawable/ic_action_locate" />
+            
+            <ImageView	
+		        android:id="@+id/button_right"
+		        android:contentDescription="button_right"
+		        android:layout_gravity="left"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" 
+		        android:src="@drawable/navigation_next_item" />
+		        
+        </LinearLayout>
+        
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:orientation="horizontal" >
+
+            <ImageView
+		        android:contentDescription="button_empty_sw"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" />
+            
+            <ImageView	
+		        android:id="@+id/button_down"
+		        android:contentDescription="button_down"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1"
+		        android:src="@drawable/navigation_expand" />
+            
+            <ImageView	
+		        android:contentDescription="button_empty_se"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_weight="1" />
+		        
+        </LinearLayout>    
+                   
+    </LinearLayout>
+    
+</LinearLayout>
