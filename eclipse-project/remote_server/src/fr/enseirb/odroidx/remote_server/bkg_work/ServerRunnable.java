@@ -3,49 +3,55 @@ package fr.enseirb.odroidx.remote_server.bkg_work;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import fr.enseirb.odroidx.remote_server.MainActivity;
-
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import fr.enseirb.odroidx.remote_server.service.RemoteControlService;
 
 public class ServerRunnable implements Runnable {
 
-	private MainActivity activity;
-	private int port;
+	private static final String TAG = "ServerRunnable";
 	
-	public ServerRunnable(MainActivity act, int communicationPort) {
+	private int port;
+	private RemoteControlService rcs;
+	
+	public ServerRunnable(RemoteControlService serv, int communicationPort) {
 		port = communicationPort;
-		activity = act;
+		rcs = serv;
+		Log.v(TAG, "ServerRunnable constructor");
 	}
 
 	@Override
 	public void run() {
 		try {
+			Log.i(TAG, "Starting server...");
+			
 			ServerSocket s = new ServerSocket(port);
 			s.setReuseAddress(true);
 			
+			Log.i(TAG, "Server is listening");
+			
 			while (s != null) {
-		        // waiting for a client connection
+				
 		        final Socket sock_client = s.accept();
-		        Log.e(getClass().getSimpleName(), "new client: "+sock_client.hashCode());
+		        Log.i(TAG, "new client: "+sock_client.hashCode());
 		        
 		        // update UI
 		        new Handler(Looper.getMainLooper()).post(new Runnable() {
 		            @Override
 		            public void run() {
-		                activity.add_client(sock_client.hashCode()+"");
+		            	rcs.sendMessageToUI(RemoteControlService.MSG__PRINT_NEW_CLIENT, "client: "+sock_client.hashCode());
 		            }
 		        });
 		        
 		        // launch a new thread for client requests
-		        ClientRunnable client_runnable = new ClientRunnable(activity, sock_client);
+		        ClientRunnable client_runnable = new ClientRunnable(sock_client, rcs);
 		        Thread client_thread = new Thread(client_runnable);
 		        client_thread.start();
 		 	}
 			
 		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), "ERROR", e);
+			Log.e(TAG, "ERROR", e);
 		}
 	}
 }

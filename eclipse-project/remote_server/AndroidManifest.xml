@@ -10,7 +10,7 @@
 
     
     <uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 	
     <application
         android:allowBackup="true"
@@ -27,6 +27,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <service android:enabled="true" android:name="fr.enseirb.odroidx.remote_server.service.RemoteControlService">
+			<intent-filter>
+				<action android:name="RemoteControlService.intent.action.Launch" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+        </service>
+        
     </application>
-
 </manifest>

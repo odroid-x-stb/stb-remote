@@ -1,103 +1,100 @@
 package fr.enseirb.odroidx.remote_server.communication;
 
 import java.net.Socket;
-import android.content.Context;
+
 import android.util.Log;
-import android.widget.Toast;
+
+/*
+ * IMPORTANT :
+ * This class performs network operations (communication through sockets)
+ * It means long time operations, causing trouble (java exception) if they are executed in the main thread (UI)
+ * That's why it has to be called from a Thread, Runnable, AsyncTask (and not from UI, or service without thread)
+ */
 
 public class STBCommunication {
 	
-	// Attributes
-	
 	private Socket sock;
-	private Context act;
-	
-	
-	// Constructors
+	private static final String TAG = "STBCommunication";
 	
 	public STBCommunication () {
 		sock = null;
-		act = null;
 	}
 	
 	public STBCommunication (Socket s) {
 		sock = s;
-		act = null;
 	}
 	
-	public STBCommunication (Context ctx) {
-		sock = null;
-		act = ctx;
-	}
-	
-	public STBCommunication (Socket s, Context ctx) {
-		sock = s;
-		act = ctx;
-	}
-	
-	
-	// Methods
-	
-	public void stb_connect(String ip, int port) {
+	public boolean stb_connect(final String ip, final int port) {
         try {
             sock = new Socket(ip, port);
             sock.setReuseAddress(true);
-            if (act != null)
-            	Toast.makeText(act, "Connected to the STB", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "Connected to the STB");
+            return true;
 		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), "ERROR:", e);
-			if (act != null)
-            	Toast.makeText(act, "Opening connection failed", Toast.LENGTH_SHORT).show();
+			Log.e(TAG, "ERROR: Opening socket failed", e);
+			return false;
 		}
 	}
 	
-	public void stb_disconnect() {
-		if (! is_connected()) {
-			if (act != null)
-            	Toast.makeText(act, "Trouble disconnecting: no connection", Toast.LENGTH_SHORT).show();
-			return;
+	public boolean stb_disconnect() {
+
+		if (! is_connected ()) {
+			Log.i(TAG, "ERROR: Trouble disconnecting: no connection");
+			return false;
 		}
-			
+		
+		String msg = "CLIENT_DISCONNECT";
+		byte msg_to_bytes[] = msg.getBytes();
+		try {
+			sock.getOutputStream().write(msg_to_bytes, 0, msg_to_bytes.length);
+		} catch (Exception e) {
+			Log.e(TAG, "ERROR: read the OutputStream failed");
+			return false;
+		}
+		
 		try {
 			sock.close();
 			sock = null;
-			if (act != null)
-            	Toast.makeText(act, "Disconnected from the STB", Toast.LENGTH_SHORT).show();
+			
+			Log.i(TAG, "Disconnected from the STB");
+			return true;
 		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), "ERROR:", e);
+			Log.e(TAG, "ERROR: close the socket failed");
+			return false;
 		}
 	}
 	
-	public void stb_send(final String msg) {
-		if (! is_connected()) {
-			if (act != null)
-            	Toast.makeText(act, "Trouble sending data: no connection", Toast.LENGTH_SHORT).show();
-			return;
+	public boolean stb_send(final String msg) {
+
+		if (! is_connected ()) {
+			Log.i(TAG, "ERROR: Trouble sending: no connection");
+			return false;
 		}
 		
 		byte msg_to_bytes[] = msg.getBytes();
 		try {
 			sock.getOutputStream().write(msg_to_bytes, 0, msg_to_bytes.length);
+			return true;
 		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), "ERROR:", e);
+			Log.e(TAG, "ERROR:", e);
+			return false;
 		}
 	}
 	
 	public String stb_receive() {
-		if (! is_connected()) {
-			if (act != null)
-            	Toast.makeText(act, "Trouble receiving data: no connection", Toast.LENGTH_SHORT).show();
-			return "";
+		if (! is_connected ()) {
+			Log.i(TAG, "ERROR: Trouble receiving: no connection");
+			return null;
 		}
 		
 		try {
-	        byte[] buffer = new byte[4096];
-	        int readBytes = sock.getInputStream().read(buffer, 0, 4096);
+	        byte[] buffer = new byte[1024];
+	        int readBytes = sock.getInputStream().read(buffer, 0, 1024);
 	        return new String(buffer, 0, readBytes, "UTF-8");
 		} catch (Exception e) {
-			Log.e(getClass().getSimpleName(), "ERROR:", e);
-			return null;
+			Log.e(TAG, "ERROR:", e);
 		}
+		return null;
 	}
 
 	public boolean is_connected () {

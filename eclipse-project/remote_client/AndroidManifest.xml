@@ -26,8 +26,6 @@
             </intent-filter>
         </activity>
         
-        <service android:enabled="true" android:name="fr.enseirb.odroidx.remote_control.services.STBCommunicationService"></service>
-        
     </application>
 
 </manifest>

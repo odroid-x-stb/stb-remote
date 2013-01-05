@@ -27,7 +27,7 @@ public class STBCommunication {
             Log.i(TAG, "Connected to the STB");
             return true;
 		} catch (Exception e) {
-			Log.e(TAG, "ERROR: Opening socket failed");
+			Log.e(TAG, "ERROR: Opening socket failed", e);
 			return false;
 		}
 	}

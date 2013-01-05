@@ -3,21 +3,25 @@ package fr.enseirb.odroidx.remote_server.bkg_work;
 import java.io.IOException;
 import java.net.Socket;
 
-import fr.enseirb.odroidx.remote_server.MainActivity;
-import fr.enseirb.odroidx.remote_server.communication.STBCommunication;
-
+import android.app.Instrumentation;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.KeyEvent;
+import fr.enseirb.odroidx.remote_server.communication.Commands;
+import fr.enseirb.odroidx.remote_server.communication.STBCommunication;
+import fr.enseirb.odroidx.remote_server.service.RemoteControlService;
 
 public class ClientRunnable implements Runnable {
 
-	private Socket sock;
-	private MainActivity activity;
+	private static final String TAG = "ClientRunnable";
 	
-	public ClientRunnable(MainActivity act, Socket sock_cli) {
+	private Socket sock;
+	private RemoteControlService rcs;
+	
+	public ClientRunnable(Socket sock_cli, RemoteControlService s) {
 		sock = sock_cli;
-		activity = act;
+		rcs = s;
 	}
 
 	@Override
@@ -29,17 +33,35 @@ public class ClientRunnable implements Runnable {
 	        
         	// waiting for data
         	final String msg = STBCom.stb_receive();
-        	Log.e(getClass().getSimpleName(), "receive from client "+sock.hashCode()+": "+msg);
+        	Log.i(TAG, "receive from client "+sock.hashCode()+": "+msg);
         	
+        	// Send the key command to activities that listen to the service
+	        new Handler(Looper.getMainLooper()).post(new Runnable() {
+	            @Override
+	            public void run() {
+	        		if (msg.equals(Commands.VIDEO_PLAY)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PLAY, null);
+	        		else if (msg.equals(Commands.VIDEO_PAUSE)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PAUSE, null);
+	        		else if (msg.equals(Commands.VIDEO_PREVIOUS)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PREVIOUS, null);
+	        		else if (msg.equals(Commands.VIDEO_REWIND)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_REWIND, null);
+	        		else if (msg.equals(Commands.VIDEO_FORWARD)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_FORWARD, null);
+	        		else if (msg.equals(Commands.VIDEO_NEXT)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_NEXT, null);
+	        		else if (msg.equals(Commands.SELECT)) rcs.sendMessageToUI(RemoteControlService.CMD__SELECT, null);
+	        		else if (msg.equals(Commands.MOVE_UP)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_UP, null);
+	        		else if (msg.equals(Commands.MOVE_DOWN)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_DOWN, null);
+	        		else if (msg.equals(Commands.MOVE_LEFT)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_LEFT, null);
+	        		else if (msg.equals(Commands.MOVE_RIGHT)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_RIGHT, null);
+	            }
+	        });
+            
         	// check if client want to leave the communication
         	if (msg.equals("CLIENT_DISCONNECT")) {
         		
-        		Log.e(getClass().getSimpleName(), "action for client "+sock.hashCode()+": disconnected");
+        		Log.i(TAG, "action for client "+sock.hashCode()+": disconnected");
         		
         		try {
 					sock.close();
 				} catch (IOException e) {
-					Log.e(getClass().getSimpleName(), "ERROR", e);
+					Log.e(TAG, "ERROR", e);
 				}
         		
         		break;
@@ -53,7 +75,7 @@ public class ClientRunnable implements Runnable {
 	        new Handler(Looper.getMainLooper()).post(new Runnable() {
 	            @Override
 	            public void run() {
-	                activity.add_client_action(sock.hashCode()+": "+msg);
+	                rcs.sendMessageToUI(RemoteControlService.MSG__PRINT_NEW_CLIENT_ACTION, msg);
 	            }
 	        });
         	
@@ -62,7 +84,7 @@ public class ClientRunnable implements Runnable {
         	
         	// send feedback
         	STBCom.stb_send(feedback);
-        	Log.e(getClass().getSimpleName(), "send to client "+sock.hashCode()+": "+feedback);
+        	Log.i(TAG, "send to client "+sock.hashCode()+": "+feedback);
 		}
 	}
 }
