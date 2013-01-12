@@ -8,24 +8,23 @@
 	<LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:gravity="center_vertical|center_horizontal" >
 
         <EditText 
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:id="@+id/EditTextIp"
             android:hint="192.168.0.1"
-            android:layout_weight="1"
             android:maxLines="1"
             android:inputType="numberDecimal"
             android:background="@android:color/black"
             android:textColor="@color/blue_light" />
         
-        <ImageView 
-            android:layout_weight="0"
+        <ImageView
             android:id="@+id/button_connect"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
 	        android:src="@drawable/img_connect" />
         
     </LinearLayout>
