@@ -3,27 +3,14 @@ package fr.enseirb.odroidx.remote_server;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.Instrumentation;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import fr.enseirb.odroidx.remote_server.service.RemoteControlService;
 
 public class MainActivity extends Activity {
 
@@ -38,153 +25,22 @@ public class MainActivity extends Activity {
 	
 	public final static int COMMUNICATION_PORT = 2000;
 
-	private ImageView button_play;
-	private ImageView button_pause;
-	private ImageView button_stop;
-	private ImageView button_previous;
-	private ImageView button_next;
-	private ImageView button_up;
-	private ImageView button_down;
-	private ImageView button_right;
-	private ImageView button_left;
-	private ImageView button_select;    
-	private ImageView button_back;
-	private ImageView button_home;
+	public ImageView button_play;
+	public ImageView button_pause;
+	public ImageView button_stop;
+	public ImageView button_previous;
+	public ImageView button_next;
+	public ImageView button_up;
+	public ImageView button_down;
+	public ImageView button_right;
+	public ImageView button_left;
+	public ImageView button_select;    
+	public ImageView button_back;
+	public ImageView button_home;
 	
-	private ArrayList<ImageView> buttons;
+	public ArrayList<ImageView> buttons;
 	
-	Messenger mService = null;
-    boolean mIsBound;
-    final Messenger mMessenger = new Messenger(new IncomingHandler());
-
-    class IncomingHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-        	
-        	switch (msg.what) {
-	            case RemoteControlService.MSG__PRINT_NEW_CLIENT:
-	            	String client = msg.getData().getString("msg");
-	            	add_client(client);
-	                break;
-	            case RemoteControlService.MSG__PRINT_NEW_CLIENT_ACTION:
-	            	String client_action = msg.getData().getString("msg");
-	            	add_client_action(client_action);
-	                break;
-	            case RemoteControlService.CMD__VIDEO_PLAY:
-	            	clear_button_pressed();
-	            	button_play.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_PLAY);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_PAUSE:
-	            	clear_button_pressed();
-	            	button_pause.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_STOP:
-	            	clear_button_pressed();
-	            	button_stop.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_PREVIOUS:
-	            	clear_button_pressed();
-	            	button_previous.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_NEXT:
-	            	clear_button_pressed();
-	            	button_next.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_NEXT);
-	            	break;
-	            case RemoteControlService.CMD__MOVE_UP:
-	            	clear_button_pressed();
-	            	button_up.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_UP);
-	            	break;
-	            case RemoteControlService.CMD__MOVE_DOWN:
-	            	clear_button_pressed();
-	            	button_down.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_DOWN);
-	            	break;
-	            case RemoteControlService.CMD__MOVE_LEFT:
-	            	clear_button_pressed();
-	            	button_left.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_LEFT);
-	            	break;
-	            case RemoteControlService.CMD__MOVE_RIGHT:
-	            	clear_button_pressed();
-	            	button_right.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_RIGHT);
-	            	break;
-	            case RemoteControlService.CMD__SELECT:
-	            	clear_button_pressed();
-	            	button_select.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_CENTER);
-	            	break;
-	            case RemoteControlService.CMD__BACK:
-	            	clear_button_pressed();
-	            	button_back.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_BACK);
-	            	break;
-	            case RemoteControlService.CMD__HOME:
-	            	clear_button_pressed();
-	            	button_home.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_DPAD_CENTER);
-	            	break;
-	            default:
-	                super.handleMessage(msg);
-            }
-        }
-    }
-    
-    private void clear_button_pressed() {
-    	button_play.setBackgroundResource(R.color.blue_dark);
-		button_pause.setBackgroundResource(R.color.blue_dark);
-		button_stop.setBackgroundResource(R.color.blue_dark);
-		button_previous.setBackgroundResource(R.color.blue_dark);
-		button_next.setBackgroundResource(R.color.blue_dark);
-		button_up.setBackgroundResource(R.color.blue_dark);
-		button_down.setBackgroundResource(R.color.blue_dark);
-		button_left.setBackgroundResource(R.color.blue_dark);
-		button_right.setBackgroundResource(R.color.blue_dark);
-		button_select.setBackgroundResource(R.color.blue_dark);
-		button_home.setBackgroundResource(R.color.blue_dark);
-		button_back.setBackgroundResource(R.color.blue_dark);
-    }
-    
-//    private void press_key (final int keyCmd) {
-//    	Thread myThread = new Thread() {
-//            public void run() {
-//    	    	try {
-//    	    		Instrumentation inst = new Instrumentation();
-//    		        inst.sendKeyDownUpSync(keyCmd);
-//    		        Log.v(TAG, "key "+keyCmd+"pressed");
-//    	    	} catch (Exception e) {
-//    	    		Log.e(TAG, "error while simulating key event :\n", e);
-//    	    	}
-//    	    }
-//    	};
-//    	myThread.start();
-//    }
-    
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = new Messenger(service);
-            try {
-                Message msg = Message.obtain(null, RemoteControlService.MSG__REGISTER_CLIENT);
-                msg.replyTo = mMessenger;
-                mService.send(msg);
-            } catch (RemoteException e) {
-                // In this case the service has crashed before we could even do anything with it
-            }
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            // This is called when the connection with the service has been unexpectedly disconnected - process crashed.
-            mService = null;
-        }
-    };
-    
-	@Override
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
@@ -229,28 +85,10 @@ public class MainActivity extends Activity {
 	    buttons.add(button_back);
 	    buttons.add(button_home);
 	    
-		startService(new Intent(MainActivity.this, RemoteControlService.class));
-		bindService(new Intent(this, RemoteControlService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    STBRemoteControlCommunication stbrcc = new STBRemoteControlCommunication(this);
+	    stbrcc.doBindService();
 	}
 		
-    void doUnbindService() {
-        if (mIsBound) {
-            // If we have received the service, and hence registered with it, then now is the time to unregister.
-            if (mService != null) {
-                try {
-                    Message msg = Message.obtain(null, RemoteControlService.MSG__UNREGISTER_CLIENT);
-                    msg.replyTo = mMessenger;
-                    mService.send(msg);
-                } catch (RemoteException e) {
-                    // There is nothing special we need to do if the service has crashed.
-                }
-            }
-            // Detach our existing connection.
-            unbindService(mConnection);
-            mIsBound = false;
-        }
-    }
-	
 	// --
 	// The following functions provide UI component modifiers :
 	// --
