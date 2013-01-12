@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/buttons_layout"
 	android:layout_width="fill_parent"
-	android:layout_height="wrap_content"
+	android:layout_height="fill_parent"
 	android:orientation="vertical" >
     
    	<!-- CONTROL BUTTONS -->
@@ -10,56 +10,42 @@
    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="horizontal" >
 
 	    <ImageView
 	        android:id="@+id/button_previous"
-	        android:contentDescription="button_previous"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:src="@drawable/av_previous" />
-	        
-	    <ImageView
-	        android:id="@+id/button_rewind"
-	        android:contentDescription="button_rewind"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:layout_weight="1"
-	        android:src="@drawable/av_rewind" />
+	        android:src="@drawable/img_previous" />
 	        
 	    <ImageView
 	        android:id="@+id/button_play"
-	        android:contentDescription="button_play"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:src="@drawable/av_play_over_video" />
+	        android:src="@drawable/img_play" />
 	        
 	    <ImageView
 	        android:id="@+id/button_pause"
-	        android:contentDescription="button_pause"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:src="@drawable/av_pause_over_video" />
+	        android:src="@drawable/img_pause" />
 	        
 	    <ImageView
-	        android:id="@+id/button_forward"
-	        android:contentDescription="button_forward"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:id="@+id/button_stop"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:src="@drawable/av_fast_forward" />
+	        android:src="@drawable/img_stop" />
 	        
 		<ImageView	
 	        android:id="@+id/button_next"
-	        android:contentDescription="button_next"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
 	        android:layout_weight="1"
-	        android:src="@drawable/av_next" />
+	        android:src="@drawable/img_next" />
 	    
     </LinearLayout>
     
@@ -79,21 +65,18 @@
 	        android:orientation="horizontal" >
 
             <ImageView
-		        android:contentDescription="button_empty_nw"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1" />
             
             <ImageView	
 		        android:id="@+id/button_up"
-		        android:contentDescription="button_up"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1"
-		        android:src="@drawable/navigation_collapse" />
+		        android:src="@drawable/img_move_up" />
             
             <ImageView	
-		        android:contentDescription="button_empty_ne"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1" />
@@ -112,14 +95,14 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1" 
-		        android:src="@drawable/navigation_previous_item" />
+		        android:src="@drawable/img_move_left" />
             
             <ImageView	
 		        android:id="@+id/button_select"
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1"
-		        android:src="@drawable/ic_action_locate" />
+		        android:src="@drawable/img_select" />
             
             <ImageView	
 		        android:id="@+id/button_right"
@@ -127,7 +110,7 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1" 
-		        android:src="@drawable/navigation_next_item" />
+		        android:src="@drawable/img_move_right" />
 		        
         </LinearLayout>
         
@@ -149,10 +132,9 @@
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1"
-		        android:src="@drawable/navigation_expand" />
+		        android:src="@drawable/img_move_down" />
             
-            <ImageView	
-		        android:contentDescription="button_empty_se"
+            <ImageView
 		        android:layout_width="fill_parent"
 		        android:layout_height="fill_parent"
 		        android:layout_weight="1" />
@@ -169,19 +151,17 @@
 
 	    <ImageView
 	        android:id="@+id/button_back"
-	        android:contentDescription="button_back"
+	        android:layout_weight="1"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:layout_weight="1"
-	        android:src="@drawable/content_undo" />
-	        
+	        android:src="@drawable/img_back" />
+	    
 	    <ImageView
 	        android:id="@+id/button_home"
-	        android:contentDescription="button_home"
+	        android:layout_weight="1"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:layout_weight="1"
-	        android:src="@drawable/collections_view_as_grid" />
+	        android:src="@drawable/img_home" />
 	    
     </LinearLayout>
     

@@ -1,5 +1,7 @@
 package fr.enseirb.odroidx.remote_client;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,8 +31,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageView button_connect;
 	private ImageView button_play;
 	private ImageView button_pause;
-	private ImageView button_rewind;
-	private ImageView button_forward;
+	private ImageView button_stop;
 	private ImageView button_previous;
 	private ImageView button_next;
 	private ImageView button_up;
@@ -38,7 +40,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageView button_left;
 	private ImageView button_select;
 	private ImageView button_back;
-	private ImageView button_home;
+	
+	private ArrayList<ImageView> buttons;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	    button_connect = (ImageView) findViewById(R.id.button_connect);
 	    button_play = (ImageView) findViewById(R.id.button_play);
 	    button_pause = (ImageView) findViewById(R.id.button_pause);
-	    button_rewind = (ImageView) findViewById(R.id.button_rewind);
-	    button_forward = (ImageView) findViewById(R.id.button_forward);
+	    button_stop = (ImageView) findViewById(R.id.button_stop);
 	    button_previous = (ImageView) findViewById(R.id.button_previous);
 	    button_next = (ImageView) findViewById(R.id.button_next);
 	    button_up = (ImageView) findViewById(R.id.button_up);
@@ -62,27 +64,28 @@ public class MainActivity extends Activity implements OnClickListener {
 	    button_right = (ImageView) findViewById(R.id.button_right);
 	    button_select = (ImageView) findViewById(R.id.button_select);
 	    button_back = (ImageView) findViewById(R.id.button_back);
-	    button_home = (ImageView) findViewById(R.id.button_home);
 	    
 	    // setting listenners
-		button_connect.setOnClickListener(this); 
-	    button_play.setOnClickListener(this);
-		button_pause.setOnClickListener(this);
-		button_rewind.setOnClickListener(this);
-		button_forward.setOnClickListener(this);
-		button_previous.setOnClickListener(this);
-		button_next.setOnClickListener(this);
-		button_up.setOnClickListener(this);
-		button_down.setOnClickListener(this);
-		button_left.setOnClickListener(this);
-		button_right.setOnClickListener(this);	
-		button_select.setOnClickListener(this);
-		button_back.setOnClickListener(this);
-		button_home.setOnClickListener(this);
+	    buttons = new ArrayList<ImageView>();
+	    buttons.add(button_connect);
+	    buttons.add(button_play);
+	    buttons.add(button_pause);
+	    buttons.add(button_previous);
+	    buttons.add(button_next);
+	    buttons.add(button_up);
+	    buttons.add(button_down);
+	    buttons.add(button_left);
+	    buttons.add(button_right);	
+	    buttons.add(button_select);
+	    buttons.add(button_back);
+	    
+	    for (ImageView iv : buttons) {
+	    	iv.setOnClickListener(this);
+	    }
 		
 		// load Previous IP used
 	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-	    String ip = settings.getString("ip", "192.168.0.1");
+	    String ip = settings.getString("ip", null);
 	    edIP.setText(ip);
 	    edIP.setKeyListener(IPAddressKeyListener.getInstance());
 	    
@@ -111,8 +114,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		if(v==button_play) sendMessageToSTB(Commands.VIDEO_PLAY);
 		else if(v==button_pause) sendMessageToSTB(Commands.VIDEO_PAUSE);
-		else if(v==button_forward) sendMessageToSTB(Commands.VIDEO_FORWARD);
-		else if(v==button_rewind) sendMessageToSTB(Commands.VIDEO_REWIND);
+		else if(v==button_stop) sendMessageToSTB(Commands.VIDEO_STOP);
 		else if(v==button_previous) sendMessageToSTB(Commands.VIDEO_PREVIOUS);
 		else if(v==button_next) sendMessageToSTB(Commands.VIDEO_NEXT);
 		else if(v==button_up) sendMessageToSTB(Commands.MOVE_UP);
@@ -121,14 +123,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		else if(v==button_right) sendMessageToSTB(Commands.MOVE_RIGHT);
 		else if(v==button_select) sendMessageToSTB(Commands.SELECT);
 		else if(v==button_back) sendMessageToSTB(Commands.BACK);
-		else if(v==button_home) sendMessageToSTB(Commands.HOME);
 		else if(v==button_connect) {
-			if (! isConnectedToSTB) {
-				connectToTheSTB();
-			}
-			else {
-				disconnectFromTheSTB();
-			}
+			if (! isConnectedToSTB) connectToTheSTB();
+			else disconnectFromTheSTB();
 		}
 	}
 	
@@ -148,7 +145,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		private MainActivity mParentActivity = null;
 		
-		
 	    public sendMessageToSTBAsyncTask(MainActivity parentActivity) {
 	        mParentActivity = parentActivity;
 	    }
@@ -163,27 +159,20 @@ public class MainActivity extends Activity implements OnClickListener {
 				String ip = mParentActivity.edIP.getText().toString();
 				success = mParentActivity.STBCom.stb_connect(ip, COMMUNICATION_PORT);
 				
-				if (! success) {
-					publishProgress("Cannot connect to the STB (check your WiFi, IP, network configuration...)");
-				} else {
-					publishProgress("Connected to the STB", "connected");
-				}
+				if (! success) publishProgress("Error: Cannot connect to the STB (check your WiFi, IP, network configuration...)");
+				else publishProgress("Connected to the STB", "connected");
 			}
 			else if (type.equals("disconnect")) {
 				success = mParentActivity.STBCom.stb_disconnect();
 				
-				if (! success) {
-					publishProgress("Cannot disconnect from the STB");
-				}
-				else {
-					publishProgress("Disconnected from the STB", "disconnected");
-				}
+				if (! success) publishProgress("Error: Cannot disconnect from the STB");
+				else publishProgress("Disconnected from the STB", "disconnected");
 			}
 			else if (type.equals("command")) {
 				String cmd = params[1];
 				success =  mParentActivity.STBCom.stb_send(cmd);
 				
-				if (! success) publishProgress("Error while sending the command to the STB");
+				if (! success) publishProgress("Error: sending command to the STB failed");
 			}
 			
 			return null;
@@ -206,20 +195,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		protected void onPostExecute(Integer result) {
 			
-			mParentActivity.button_play.setBackgroundResource(R.color.black);
-			mParentActivity.button_pause.setBackgroundResource(R.color.black);
-			mParentActivity.button_forward.setBackgroundResource(R.color.black);
-			mParentActivity.button_rewind.setBackgroundResource(R.color.black);
-			mParentActivity.button_previous.setBackgroundResource(R.color.black);
-			mParentActivity.button_next.setBackgroundResource(R.color.black);
-			mParentActivity.button_up.setBackgroundResource(R.color.black);
-			mParentActivity.button_down.setBackgroundResource(R.color.black);
-			mParentActivity.button_left.setBackgroundResource(R.color.black);
-			mParentActivity.button_right.setBackgroundResource(R.color.black);
-			mParentActivity.button_select.setBackgroundResource(R.color.black);
-			mParentActivity.button_connect.setBackgroundResource(R.color.black);
-			mParentActivity.button_back.setBackgroundResource(R.color.black);
-			mParentActivity.button_home.setBackgroundResource(R.color.black);
+			for (ImageView iv : buttons) {
+		    	iv.setBackgroundResource(R.color.black);
+		    }
 		}
 	}
 }

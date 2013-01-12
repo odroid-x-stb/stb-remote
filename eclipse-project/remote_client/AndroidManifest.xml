@@ -15,7 +15,7 @@
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name="fr.enseirb.odroidx.remote_client.MainActivity"
             android:label="@string/app_name"
