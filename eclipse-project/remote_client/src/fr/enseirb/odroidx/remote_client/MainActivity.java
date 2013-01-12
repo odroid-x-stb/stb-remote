@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +21,10 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private static final String PREFS_NAME = "IPSTORAGE";
 	private static final String TAG = "MainActivity";
-    private boolean isConnectedToSTB = false;
+	private static final int COMMUNICATION_PORT = 2000;
+	
+	private boolean isConnectedToSTB = false;
     private STBCommunication STBCom = null;
-    private static final int COMMUNICATION_PORT = 2000;
     
     private EditText edIP;
 	private LinearLayout buttons_layout;
@@ -40,6 +40,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageView button_left;
 	private ImageView button_select;
 	private ImageView button_back;
+	private ImageView button_home;
 	
 	private ArrayList<ImageView> buttons;
 	
@@ -64,12 +65,14 @@ public class MainActivity extends Activity implements OnClickListener {
 	    button_right = (ImageView) findViewById(R.id.button_right);
 	    button_select = (ImageView) findViewById(R.id.button_select);
 	    button_back = (ImageView) findViewById(R.id.button_back);
+	    button_home = (ImageView) findViewById(R.id.button_home);
 	    
 	    // setting listenners
 	    buttons = new ArrayList<ImageView>();
 	    buttons.add(button_connect);
 	    buttons.add(button_play);
 	    buttons.add(button_pause);
+	    buttons.add(button_stop);
 	    buttons.add(button_previous);
 	    buttons.add(button_next);
 	    buttons.add(button_up);
@@ -78,6 +81,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	    buttons.add(button_right);	
 	    buttons.add(button_select);
 	    buttons.add(button_back);
+	    buttons.add(button_home);
 	    
 	    for (ImageView iv : buttons) {
 	    	iv.setOnClickListener(this);
@@ -123,6 +127,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		else if(v==button_right) sendMessageToSTB(Commands.MOVE_RIGHT);
 		else if(v==button_select) sendMessageToSTB(Commands.SELECT);
 		else if(v==button_back) sendMessageToSTB(Commands.BACK);
+		else if(v==button_home) sendMessageToSTB(Commands.HOME);
 		else if(v==button_connect) {
 			if (! isConnectedToSTB) connectToTheSTB();
 			else disconnectFromTheSTB();
@@ -180,7 +185,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		protected void onProgressUpdate(String... params) {
 			
-			Toast.makeText(mParentActivity.getApplicationContext(), params[0], 5).show();
+			Toast.makeText(mParentActivity.getApplicationContext(), params[0], Toast.LENGTH_LONG).show();
 			
 			if (params.length == 2) {
 				if (params[1].equals("connected")) {

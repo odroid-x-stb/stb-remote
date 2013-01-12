@@ -1,15 +1,11 @@
 package fr.enseirb.odroidx.remote_server.communication;
 
-import android.util.Log;
-import android.view.KeyEvent;
-
 public class Commands {
 	
 	public static final String VIDEO_PLAY = "VIDEO_PLAY";
 	public static final String VIDEO_PAUSE = "VIDEO_PAUSE";
+	public static final String VIDEO_STOP = "VIDEO_STOP";
 	public static final String VIDEO_PREVIOUS = "VIDEO_PREVIOUS";
-	public static final String VIDEO_REWIND = "VIDEO_REWIND";
-	public static final String VIDEO_FORWARD = "VIDEO_FORWARD";
 	public static final String VIDEO_NEXT = "VIDEO_NEXT";
 	public static final String MOVE_UP = "MOVE_UP";
 	public static final String MOVE_DOWN = "MOVE_DOWN";

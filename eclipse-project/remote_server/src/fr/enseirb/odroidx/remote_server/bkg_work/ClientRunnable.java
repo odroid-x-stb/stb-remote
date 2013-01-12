@@ -42,8 +42,7 @@ public class ClientRunnable implements Runnable {
 	        		if (msg.equals(Commands.VIDEO_PLAY)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PLAY, null);
 	        		else if (msg.equals(Commands.VIDEO_PAUSE)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PAUSE, null);
 	        		else if (msg.equals(Commands.VIDEO_PREVIOUS)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PREVIOUS, null);
-	        		else if (msg.equals(Commands.VIDEO_REWIND)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_REWIND, null);
-	        		else if (msg.equals(Commands.VIDEO_FORWARD)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_FORWARD, null);
+	        		else if (msg.equals(Commands.VIDEO_STOP)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_STOP, null);
 	        		else if (msg.equals(Commands.VIDEO_NEXT)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_NEXT, null);
 	        		else if (msg.equals(Commands.SELECT)) rcs.sendMessageToUI(RemoteControlService.CMD__SELECT, null);
 	        		else if (msg.equals(Commands.MOVE_UP)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_UP, null);

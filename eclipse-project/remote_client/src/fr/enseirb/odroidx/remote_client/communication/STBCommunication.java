@@ -20,6 +20,10 @@ public class STBCommunication {
 		sock = null;
 	}
 	
+	public STBCommunication (Socket s) {
+		sock = s;
+	}
+	
 	public boolean stb_connect(final String ip, final int port) {
         try {
             sock = new Socket(ip, port);
@@ -63,14 +67,13 @@ public class STBCommunication {
 	public boolean stb_send(final String msg) {
 
 		if (! is_connected ()) {
-			Log.i(TAG, "ERROR: Trouble disconnecting: no connection");
+			Log.i(TAG, "ERROR: Trouble sending: no connection");
 			return false;
 		}
 		
 		byte msg_to_bytes[] = msg.getBytes();
 		try {
 			sock.getOutputStream().write(msg_to_bytes, 0, msg_to_bytes.length);
-			Log.i(TAG, "ERROR: Trouble disconnecting: no connection");
 			return true;
 		} catch (Exception e) {
 			Log.e(TAG, "ERROR:", e);
@@ -80,7 +83,7 @@ public class STBCommunication {
 	
 	public String stb_receive() {
 		if (! is_connected ()) {
-			Log.i(TAG, "ERROR: Trouble disconnecting: no connection");
+			Log.i(TAG, "ERROR: Trouble receiving: no connection");
 			return null;
 		}
 		

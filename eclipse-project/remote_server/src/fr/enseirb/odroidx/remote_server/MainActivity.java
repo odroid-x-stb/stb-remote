@@ -40,8 +40,7 @@ public class MainActivity extends Activity {
 
 	private ImageView button_play;
 	private ImageView button_pause;
-	private ImageView button_rewind;
-	private ImageView button_forward;
+	private ImageView button_stop;
 	private ImageView button_previous;
 	private ImageView button_next;
 	private ImageView button_up;
@@ -51,6 +50,8 @@ public class MainActivity extends Activity {
 	private ImageView button_select;    
 	private ImageView button_back;
 	private ImageView button_home;
+	
+	private ArrayList<ImageView> buttons;
 	
 	Messenger mService = null;
     boolean mIsBound;
@@ -79,20 +80,15 @@ public class MainActivity extends Activity {
 	            	button_pause.setBackgroundResource(R.color.orange_light);
 //	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
 	            	break;
+	            case RemoteControlService.CMD__VIDEO_STOP:
+	            	clear_button_pressed();
+	            	button_stop.setBackgroundResource(R.color.orange_light);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
+	            	break;
 	            case RemoteControlService.CMD__VIDEO_PREVIOUS:
 	            	clear_button_pressed();
 	            	button_previous.setBackgroundResource(R.color.orange_light);
 //	            	press_key(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_REWIND:
-	            	clear_button_pressed();
-	            	button_rewind.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_REWIND);
-	            	break;
-	            case RemoteControlService.CMD__VIDEO_FORWARD:
-	            	clear_button_pressed();
-	            	button_forward.setBackgroundResource(R.color.orange_light);
-//	            	press_key(KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_NEXT:
 	            	clear_button_pressed();
@@ -143,8 +139,7 @@ public class MainActivity extends Activity {
     private void clear_button_pressed() {
     	button_play.setBackgroundResource(R.color.blue_dark);
 		button_pause.setBackgroundResource(R.color.blue_dark);
-		button_forward.setBackgroundResource(R.color.blue_dark);
-		button_rewind.setBackgroundResource(R.color.blue_dark);
+		button_stop.setBackgroundResource(R.color.blue_dark);
 		button_previous.setBackgroundResource(R.color.blue_dark);
 		button_next.setBackgroundResource(R.color.blue_dark);
 		button_up.setBackgroundResource(R.color.blue_dark);
@@ -156,20 +151,20 @@ public class MainActivity extends Activity {
 		button_back.setBackgroundResource(R.color.blue_dark);
     }
     
-    private void press_key (final int keyCmd) {
-    	Thread myThread = new Thread() {
-            public void run() {
-    	    	try {
-    	    		Instrumentation inst = new Instrumentation();
-    		        inst.sendKeyDownUpSync(keyCmd);
-    		        Log.v(TAG, "key "+keyCmd+"pressed");
-    	    	} catch (Exception e) {
-    	    		Log.e(TAG, "error while simulating key event :\n", e);
-    	    	}
-    	    }
-    	};
-    	myThread.start();
-    }
+//    private void press_key (final int keyCmd) {
+//    	Thread myThread = new Thread() {
+//            public void run() {
+//    	    	try {
+//    	    		Instrumentation inst = new Instrumentation();
+//    		        inst.sendKeyDownUpSync(keyCmd);
+//    		        Log.v(TAG, "key "+keyCmd+"pressed");
+//    	    	} catch (Exception e) {
+//    	    		Log.e(TAG, "error while simulating key event :\n", e);
+//    	    	}
+//    	    }
+//    	};
+//    	myThread.start();
+//    }
     
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -209,8 +204,7 @@ public class MainActivity extends Activity {
 	    // loading view components
 	    button_play = (ImageView) findViewById(R.id.button_play);
 	    button_pause = (ImageView) findViewById(R.id.button_pause);
-	    button_rewind = (ImageView) findViewById(R.id.button_rewind);
-	    button_forward = (ImageView) findViewById(R.id.button_forward);
+	    button_stop = (ImageView) findViewById(R.id.button_stop);
 	    button_previous = (ImageView) findViewById(R.id.button_previous);
 	    button_next = (ImageView) findViewById(R.id.button_next);
 	    button_up = (ImageView) findViewById(R.id.button_up);
@@ -221,6 +215,20 @@ public class MainActivity extends Activity {
 	    button_back = (ImageView) findViewById(R.id.button_back);
 	    button_home = (ImageView) findViewById(R.id.button_home);
 		
+	    buttons = new ArrayList<ImageView>();
+	    buttons.add(button_play);
+	    buttons.add(button_pause);
+	    buttons.add(button_stop);
+	    buttons.add(button_previous);
+	    buttons.add(button_next);
+	    buttons.add(button_up);
+	    buttons.add(button_down);
+	    buttons.add(button_left);
+	    buttons.add(button_right);	
+	    buttons.add(button_select);
+	    buttons.add(button_back);
+	    buttons.add(button_home);
+	    
 		startService(new Intent(MainActivity.this, RemoteControlService.class));
 		bindService(new Intent(this, RemoteControlService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}

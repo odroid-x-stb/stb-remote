@@ -29,9 +29,8 @@ public class RemoteControlService extends Service {
     
 	public static final int CMD__VIDEO_PLAY = 10;
 	public static final int CMD__VIDEO_PAUSE = 11;
+	public static final int CMD__VIDEO_STOP = 23;
 	public static final int CMD__VIDEO_PREVIOUS = 12;
-	public static final int CMD__VIDEO_REWIND = 13;
-	public static final int CMD__VIDEO_FORWARD = 14;
 	public static final int CMD__VIDEO_NEXT = 15;
 	public static final int CMD__MOVE_UP = 16;
 	public static final int CMD__MOVE_DOWN = 17;
@@ -40,6 +39,7 @@ public class RemoteControlService extends Service {
 	public static final int CMD__SELECT = 20;
 	public static final int CMD__HOME = 21;
 	public static final int CMD__BACK = 22;
+	
 	
     final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
 
