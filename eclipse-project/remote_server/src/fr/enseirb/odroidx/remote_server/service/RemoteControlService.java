@@ -38,6 +38,8 @@ public class RemoteControlService extends Service {
 	public static final int CMD__MOVE_LEFT = 18;
 	public static final int CMD__MOVE_RIGHT = 19;
 	public static final int CMD__SELECT = 20;
+	public static final int CMD__HOME = 21;
+	public static final int CMD__BACK = 22;
 	
     final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
 

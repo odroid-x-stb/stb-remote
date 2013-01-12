@@ -161,4 +161,28 @@
                    
     </fr.enseirb.odroidx.remote_client.UI.SquareLayout>
     
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+	    <ImageView
+	        android:id="@+id/button_back"
+	        android:contentDescription="button_back"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/content_undo" />
+	        
+	    <ImageView
+	        android:id="@+id/button_home"
+	        android:contentDescription="button_home"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_weight="1"
+	        android:src="@drawable/collections_view_as_grid" />
+	    
+    </LinearLayout>
+    
 </LinearLayout>

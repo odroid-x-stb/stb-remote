@@ -49,6 +49,8 @@ public class MainActivity extends Activity {
 	private ImageView button_right;
 	private ImageView button_left;
 	private ImageView button_select;    
+	private ImageView button_back;
+	private ImageView button_home;
 	
 	Messenger mService = null;
     boolean mIsBound;
@@ -70,58 +72,68 @@ public class MainActivity extends Activity {
 	            case RemoteControlService.CMD__VIDEO_PLAY:
 	            	clear_button_pressed();
 	            	button_play.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_PLAY);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_PLAY);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_PAUSE:
 	            	clear_button_pressed();
 	            	button_pause.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_PAUSE);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_PREVIOUS:
 	            	clear_button_pressed();
 	            	button_previous.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_REWIND:
 	            	clear_button_pressed();
 	            	button_rewind.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_REWIND);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_REWIND);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_FORWARD:
 	            	clear_button_pressed();
 	            	button_forward.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_FAST_FORWARD);
 	            	break;
 	            case RemoteControlService.CMD__VIDEO_NEXT:
 	            	clear_button_pressed();
 	            	button_next.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_MEDIA_NEXT);
+//	            	press_key(KeyEvent.KEYCODE_MEDIA_NEXT);
 	            	break;
 	            case RemoteControlService.CMD__MOVE_UP:
 	            	clear_button_pressed();
 	            	button_up.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_DPAD_UP);
+//	            	press_key(KeyEvent.KEYCODE_DPAD_UP);
 	            	break;
 	            case RemoteControlService.CMD__MOVE_DOWN:
 	            	clear_button_pressed();
 	            	button_down.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_DPAD_DOWN);
+//	            	press_key(KeyEvent.KEYCODE_DPAD_DOWN);
 	            	break;
 	            case RemoteControlService.CMD__MOVE_LEFT:
 	            	clear_button_pressed();
 	            	button_left.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_DPAD_LEFT);
+//	            	press_key(KeyEvent.KEYCODE_DPAD_LEFT);
 	            	break;
 	            case RemoteControlService.CMD__MOVE_RIGHT:
 	            	clear_button_pressed();
 	            	button_right.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_DPAD_RIGHT);
+//	            	press_key(KeyEvent.KEYCODE_DPAD_RIGHT);
 	            	break;
 	            case RemoteControlService.CMD__SELECT:
 	            	clear_button_pressed();
 	            	button_select.setBackgroundResource(R.color.orange_light);
-	            	press_key(KeyEvent.KEYCODE_DPAD_CENTER);
-	            	break;   
+//	            	press_key(KeyEvent.KEYCODE_DPAD_CENTER);
+	            	break;
+	            case RemoteControlService.CMD__BACK:
+	            	clear_button_pressed();
+	            	button_back.setBackgroundResource(R.color.orange_light);
+//	            	press_key(KeyEvent.KEYCODE_BACK);
+	            	break;
+	            case RemoteControlService.CMD__HOME:
+	            	clear_button_pressed();
+	            	button_home.setBackgroundResource(R.color.orange_light);
+//	            	press_key(KeyEvent.KEYCODE_DPAD_CENTER);
+	            	break;
 	            default:
 	                super.handleMessage(msg);
             }
@@ -140,6 +152,8 @@ public class MainActivity extends Activity {
 		button_left.setBackgroundResource(R.color.blue_dark);
 		button_right.setBackgroundResource(R.color.blue_dark);
 		button_select.setBackgroundResource(R.color.blue_dark);
+		button_home.setBackgroundResource(R.color.blue_dark);
+		button_back.setBackgroundResource(R.color.blue_dark);
     }
     
     private void press_key (final int keyCmd) {
@@ -204,7 +218,8 @@ public class MainActivity extends Activity {
 	    button_left = (ImageView) findViewById(R.id.button_left);
 	    button_right = (ImageView) findViewById(R.id.button_right);
 	    button_select = (ImageView) findViewById(R.id.button_select);
-	    
+	    button_back = (ImageView) findViewById(R.id.button_back);
+	    button_home = (ImageView) findViewById(R.id.button_home);
 		
 		startService(new Intent(MainActivity.this, RemoteControlService.class));
 		bindService(new Intent(this, RemoteControlService.class), mConnection, Context.BIND_AUTO_CREATE);
@@ -275,12 +290,5 @@ public class MainActivity extends Activity {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, actions_array);
 		listview_actions.setAdapter(adapter);
 		listview_actions.setSelection(actions_array.length-1);
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		Log.i(TAG, "ese"+keyCode);
-		return super.onKeyDown(keyCode, event);
 	}
 }

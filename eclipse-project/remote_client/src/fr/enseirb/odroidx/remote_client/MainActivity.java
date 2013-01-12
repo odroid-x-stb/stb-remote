@@ -37,6 +37,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageView button_right;
 	private ImageView button_left;
 	private ImageView button_select;
+	private ImageView button_back;
+	private ImageView button_home;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	    button_left = (ImageView) findViewById(R.id.button_left);
 	    button_right = (ImageView) findViewById(R.id.button_right);
 	    button_select = (ImageView) findViewById(R.id.button_select);
+	    button_back = (ImageView) findViewById(R.id.button_back);
+	    button_home = (ImageView) findViewById(R.id.button_home);
 	    
 	    // setting listenners
 		button_connect.setOnClickListener(this); 
@@ -73,6 +77,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		button_left.setOnClickListener(this);
 		button_right.setOnClickListener(this);	
 		button_select.setOnClickListener(this);
+		button_back.setOnClickListener(this);
+		button_home.setOnClickListener(this);
 		
 		// load Previous IP used
 	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -114,7 +120,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		else if(v==button_left) sendMessageToSTB(Commands.MOVE_LEFT);
 		else if(v==button_right) sendMessageToSTB(Commands.MOVE_RIGHT);
 		else if(v==button_select) sendMessageToSTB(Commands.SELECT);
-	    else if(v==button_connect) {
+		else if(v==button_back) sendMessageToSTB(Commands.BACK);
+		else if(v==button_home) sendMessageToSTB(Commands.HOME);
+		else if(v==button_connect) {
 			if (! isConnectedToSTB) {
 				connectToTheSTB();
 			}
@@ -210,6 +218,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			mParentActivity.button_right.setBackgroundResource(R.color.black);
 			mParentActivity.button_select.setBackgroundResource(R.color.black);
 			mParentActivity.button_connect.setBackgroundResource(R.color.black);
+			mParentActivity.button_back.setBackgroundResource(R.color.black);
+			mParentActivity.button_home.setBackgroundResource(R.color.black);
 		}
 	}
 }

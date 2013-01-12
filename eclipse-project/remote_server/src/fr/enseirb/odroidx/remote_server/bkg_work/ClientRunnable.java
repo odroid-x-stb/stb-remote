@@ -50,6 +50,8 @@ public class ClientRunnable implements Runnable {
 	        		else if (msg.equals(Commands.MOVE_DOWN)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_DOWN, null);
 	        		else if (msg.equals(Commands.MOVE_LEFT)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_LEFT, null);
 	        		else if (msg.equals(Commands.MOVE_RIGHT)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_RIGHT, null);
+	        		else if (msg.equals(Commands.BACK)) rcs.sendMessageToUI(RemoteControlService.CMD__BACK, null);
+	        		else if (msg.equals(Commands.HOME)) rcs.sendMessageToUI(RemoteControlService.CMD__HOME, null);
 	            }
 	        });
             

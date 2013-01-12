@@ -13,4 +13,6 @@ public class Commands {
 	public static final String MOVE_LEFT = "MOVE_LEFT";
 	public static final String MOVE_RIGHT = "MOVE_RIGHT";
 	public static final String SELECT = "SELECT";
+	public static final String BACK = "BACK";
+	public static final String HOME = "HOME";
 }
