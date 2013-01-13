@@ -54,14 +54,14 @@ public class GestureActivity extends Activity implements GestureHandler {
 	}
 
 	@Override
-	public boolean touchSingle() {
-		Log.d(TAG, "Gesture detected: SinglePress");
+	public boolean singleTap() {
+		Log.d(TAG, "Gesture detected: SingleTap");
 		return false;
 	}
 
 	@Override
-	public boolean touchDouble() {
-		Log.d(TAG, "Gesture detected: DoublePress");
+	public boolean doubleTap() {
+		Log.d(TAG, "Gesture detected: DoubleTap");
 		return false;
 	}
 }

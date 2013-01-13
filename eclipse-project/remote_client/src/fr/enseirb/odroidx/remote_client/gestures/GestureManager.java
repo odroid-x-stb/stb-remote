@@ -1,9 +1,9 @@
 package fr.enseirb.odroidx.remote_client.gestures;
 
-import android.view.GestureDetector.OnGestureListener;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
-public class GestureManager implements OnGestureListener {
+public class GestureManager extends SimpleOnGestureListener {
 
 	private static final int SLIDE_MIN_DISTANCE = 120;
     private static final int SLIDE_VELOCITY_THRESHOLD = 200;
@@ -12,11 +12,6 @@ public class GestureManager implements OnGestureListener {
 	
 	public GestureManager(GestureHandler receiver) {
 		this.receiver = receiver;
-	}
-	
-	@Override
-	public boolean onDown(MotionEvent e) {
-		return false;
 	}
 
 	@Override
@@ -34,24 +29,14 @@ public class GestureManager implements OnGestureListener {
 	}
 
 	@Override
-	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
+	public boolean onSingleTapConfirmed(MotionEvent e) {
+		receiver.singleTap();
+		return true;
 	}
 
 	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean onDoubleTap(MotionEvent e) {
+		receiver.doubleTap();
+		return true;
 	}
 }
