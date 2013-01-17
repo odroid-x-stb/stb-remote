@@ -96,13 +96,13 @@ public class STBRemoteControlCommunication {
 	            	}
 	            	break;
 				case CMD__SOUND_MUTE:
-					press_key(KeyEvent.KEYCODE_MUTE);
+					press_key(KeyEvent.KEYCODE_VOLUME_MUTE);
 					break;
 				case CMD__SOUND_PLUS:
-					press_key(KeyEvent.KEYCODE_PLUS);
+					press_key(KeyEvent.KEYCODE_VOLUME_UP);
 					break;
 				case CMD__SOUND_MINUS:
-					press_key(KeyEvent.KEYCODE_MINUS);
+					press_key(KeyEvent.KEYCODE_VOLUME_DOWN);
 					break;
 				case CMD__USER_TEXT:
 					String user_text = msg.getData().getString("msg_value");
@@ -135,43 +135,43 @@ public class STBRemoteControlCommunication {
 	private void press_key_corresponding_to_string (String msg) {
 		for (char ch: msg.toCharArray()) {
 			switch(ch) {
-				case '.': press_key(KeyEvent.KEYCODE_NUMPAD_DOT); Log.v(TAG, "press_key KEYCODE_NUMPAD_DOT"); break;
-				case '0': press_key(KeyEvent.KEYCODE_NUMPAD_0); Log.v(TAG, "press_key KEYCODE_NUMPAD_0"); break;
-				case '1': press_key(KeyEvent.KEYCODE_NUMPAD_1); Log.v(TAG, "press_key KEYCODE_NUMPAD_1"); break;
-				case '2': press_key(KeyEvent.KEYCODE_NUMPAD_2); Log.v(TAG, "press_key KEYCODE_NUMPAD_2"); break;
-				case '3': press_key(KeyEvent.KEYCODE_NUMPAD_3); Log.v(TAG, "press_key KEYCODE_NUMPAD_3"); break;
-				case '4': press_key(KeyEvent.KEYCODE_NUMPAD_4); Log.v(TAG, "press_key KEYCODE_NUMPAD_4"); break;
-				case '5': press_key(KeyEvent.KEYCODE_NUMPAD_5); Log.v(TAG, "press_key KEYCODE_NUMPAD_5"); break;
-				case '6': press_key(KeyEvent.KEYCODE_NUMPAD_6); Log.v(TAG, "press_key KEYCODE_NUMPAD_6"); break;
-				case '7': press_key(KeyEvent.KEYCODE_NUMPAD_7); Log.v(TAG, "press_key KEYCODE_NUMPAD_7"); break;
-				case '8': press_key(KeyEvent.KEYCODE_NUMPAD_8); Log.v(TAG, "press_key KEYCODE_NUMPAD_8"); break;
-				case '9': press_key(KeyEvent.KEYCODE_NUMPAD_9); Log.v(TAG, "press_key KEYCODE_NUMPAD_9"); break;
-				case 'A': press_key(KeyEvent.KEYCODE_A); Log.v(TAG, "press_key KEYCODE_A"); break;
-				case 'B': press_key(KeyEvent.KEYCODE_B); Log.v(TAG, "press_key KEYCODE_B"); break;
-				case 'C': press_key(KeyEvent.KEYCODE_C); Log.v(TAG, "press_key KEYCODE_C"); break;
-				case 'D': press_key(KeyEvent.KEYCODE_D); Log.v(TAG, "press_key KEYCODE_D"); break;
-				case 'E': press_key(KeyEvent.KEYCODE_E); Log.v(TAG, "press_key KEYCODE_E"); break;
-				case 'F': press_key(KeyEvent.KEYCODE_F); Log.v(TAG, "press_key KEYCODE_F"); break;
-				case 'G': press_key(KeyEvent.KEYCODE_G); Log.v(TAG, "press_key KEYCODE_G"); break;
-				case 'H': press_key(KeyEvent.KEYCODE_H); Log.v(TAG, "press_key KEYCODE_H"); break;
-				case 'I': press_key(KeyEvent.KEYCODE_I); Log.v(TAG, "press_key KEYCODE_I"); break;
-				case 'J': press_key(KeyEvent.KEYCODE_J); Log.v(TAG, "press_key KEYCODE_J"); break;
-				case 'K': press_key(KeyEvent.KEYCODE_K); Log.v(TAG, "press_key KEYCODE_K"); break;
-				case 'L': press_key(KeyEvent.KEYCODE_L); Log.v(TAG, "press_key KEYCODE_L"); break;
-				case 'M': press_key(KeyEvent.KEYCODE_M); Log.v(TAG, "press_key KEYCODE_M"); break;
-				case 'N': press_key(KeyEvent.KEYCODE_N); Log.v(TAG, "press_key KEYCODE_N"); break;
-				case 'O': press_key(KeyEvent.KEYCODE_O); Log.v(TAG, "press_key KEYCODE_O"); break;
-				case 'P': press_key(KeyEvent.KEYCODE_P); Log.v(TAG, "press_key KEYCODE_P"); break;
-				case 'Q': press_key(KeyEvent.KEYCODE_Q); Log.v(TAG, "press_key KEYCODE_Q"); break;
-				case 'R': press_key(KeyEvent.KEYCODE_R); Log.v(TAG, "press_key KEYCODE_R"); break;
-				case 'S': press_key(KeyEvent.KEYCODE_S); Log.v(TAG, "press_key KEYCODE_S"); break;
-				case 'T': press_key(KeyEvent.KEYCODE_T); Log.v(TAG, "press_key KEYCODE_T"); break;
-				case 'U': press_key(KeyEvent.KEYCODE_U); Log.v(TAG, "press_key KEYCODE_U"); break;
-				case 'V': press_key(KeyEvent.KEYCODE_V); Log.v(TAG, "press_key KEYCODE_V"); break;
-				case 'W': press_key(KeyEvent.KEYCODE_W); Log.v(TAG, "press_key KEYCODE_W"); break;
-				case 'X': press_key(KeyEvent.KEYCODE_X); Log.v(TAG, "press_key KEYCODE_X"); break;
-				case 'Y': press_key(KeyEvent.KEYCODE_Y); Log.v(TAG, "press_key KEYCODE_Y"); break;
-				case 'Z': press_key(KeyEvent.KEYCODE_Z); Log.v(TAG, "press_key KEYCODE_Z"); break;
+				case '.': press_key(KeyEvent.KEYCODE_NUMPAD_DOT); break;
+				case '0': press_key(KeyEvent.KEYCODE_NUMPAD_0); break;
+				case '1': press_key(KeyEvent.KEYCODE_NUMPAD_1); break;
+				case '2': press_key(KeyEvent.KEYCODE_NUMPAD_2); break;
+				case '3': press_key(KeyEvent.KEYCODE_NUMPAD_3); break;
+				case '4': press_key(KeyEvent.KEYCODE_NUMPAD_4); break;
+				case '5': press_key(KeyEvent.KEYCODE_NUMPAD_5); break;
+				case '6': press_key(KeyEvent.KEYCODE_NUMPAD_6); break;
+				case '7': press_key(KeyEvent.KEYCODE_NUMPAD_7); break;
+				case '8': press_key(KeyEvent.KEYCODE_NUMPAD_8); break;
+				case '9': press_key(KeyEvent.KEYCODE_NUMPAD_9); break;
+				case 'A': press_key(KeyEvent.KEYCODE_A); break;
+				case 'B': press_key(KeyEvent.KEYCODE_B); break;
+				case 'C': press_key(KeyEvent.KEYCODE_C); break;
+				case 'D': press_key(KeyEvent.KEYCODE_D); break;
+				case 'E': press_key(KeyEvent.KEYCODE_E); break;
+				case 'F': press_key(KeyEvent.KEYCODE_F); break;
+				case 'G': press_key(KeyEvent.KEYCODE_G); break;
+				case 'H': press_key(KeyEvent.KEYCODE_H); break;
+				case 'I': press_key(KeyEvent.KEYCODE_I); break;
+				case 'J': press_key(KeyEvent.KEYCODE_J); break;
+				case 'K': press_key(KeyEvent.KEYCODE_K); break;
+				case 'L': press_key(KeyEvent.KEYCODE_L); break;
+				case 'M': press_key(KeyEvent.KEYCODE_M); break;
+				case 'N': press_key(KeyEvent.KEYCODE_N); break;
+				case 'O': press_key(KeyEvent.KEYCODE_O); break;
+				case 'P': press_key(KeyEvent.KEYCODE_P); break;
+				case 'Q': press_key(KeyEvent.KEYCODE_Q); break;
+				case 'R': press_key(KeyEvent.KEYCODE_R); break;
+				case 'S': press_key(KeyEvent.KEYCODE_S); break;
+				case 'T': press_key(KeyEvent.KEYCODE_T); break;
+				case 'U': press_key(KeyEvent.KEYCODE_U); break;
+				case 'V': press_key(KeyEvent.KEYCODE_V); break;
+				case 'W': press_key(KeyEvent.KEYCODE_W); break;
+				case 'X': press_key(KeyEvent.KEYCODE_X); break;
+				case 'Y': press_key(KeyEvent.KEYCODE_Y); break;
+				case 'Z': press_key(KeyEvent.KEYCODE_Z); break;
 			}
 		}
 	}
