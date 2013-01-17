@@ -3,6 +3,8 @@ package fr.enseirb.odroidx.remote_client;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,6 +43,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	private ImageView button_select;
 	private ImageView button_back;
 	private ImageView button_home;
+	private ImageView button_sound_mute;
+	private ImageView button_sound_plus;
+	private ImageView button_sound_minus;
+	private ImageView button_enter_text;
 	
 	private ArrayList<ImageView> buttons;
 	
@@ -66,8 +72,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	    button_select = (ImageView) findViewById(R.id.button_select);
 	    button_back = (ImageView) findViewById(R.id.button_back);
 	    button_home = (ImageView) findViewById(R.id.button_home);
+	    button_sound_mute = (ImageView) findViewById(R.id.button_sound_mute);
+	    button_sound_plus = (ImageView) findViewById(R.id.button_sound_plus);
+	    button_sound_minus = (ImageView) findViewById(R.id.button_sound_minus);
+	    button_enter_text = (ImageView) findViewById(R.id.button_enter_text);
 	    
-	    // setting listenners
+	    // setting listeners
 	    buttons = new ArrayList<ImageView>();
 	    buttons.add(button_connect);
 	    buttons.add(button_play);
@@ -82,6 +92,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	    buttons.add(button_select);
 	    buttons.add(button_back);
 	    buttons.add(button_home);
+	    buttons.add(button_sound_mute);
+	    buttons.add(button_sound_plus);
+	    buttons.add(button_sound_minus);
+	    buttons.add(button_enter_text);
 	    
 	    for (ImageView iv : buttons) {
 	    	iv.setOnClickListener(this);
@@ -110,7 +124,7 @@ public class MainActivity extends Activity implements OnClickListener {
     	editor.putString("ip", edIP.getText().toString());
     	editor.commit();
     }
-
+    
 	@Override
 	public void onClick(View v) {
 		Log.v(TAG, "click event on a button");
@@ -128,9 +142,28 @@ public class MainActivity extends Activity implements OnClickListener {
 		else if(v==button_select) sendMessageToSTB(Commands.SELECT);
 		else if(v==button_back) sendMessageToSTB(Commands.BACK);
 		else if(v==button_home) sendMessageToSTB(Commands.HOME);
+		else if(v==button_sound_mute) sendMessageToSTB(Commands.SOUND_MUTE);
+		else if(v==button_sound_plus) sendMessageToSTB(Commands.SOUND_PLUS);
+		else if(v==button_sound_minus) sendMessageToSTB(Commands.SOUND_MINUS);
 		else if(v==button_connect) {
 			if (! isConnectedToSTB) connectToTheSTB();
 			else disconnectFromTheSTB();
+		}
+		else if( v==button_enter_text) {
+
+			AlertDialog.Builder editalert = new AlertDialog.Builder(this);
+			editalert.setTitle("Message to send to the STB");
+			final EditText input = new EditText(this);
+			editalert.setView(input);
+
+			editalert.setPositiveButton("Send it", new DialogInterface.OnClickListener() {
+			    public void onClick(DialogInterface dialog, int whichButton) {
+			    	
+			    	sendMessageToSTB(Commands.USER_TEXT, input.getText().toString());
+			    }
+			});
+
+			editalert.show();
 		}
 	}
 	
@@ -144,6 +177,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	
 	private void sendMessageToSTB(String msg) {
 		new sendMessageToSTBAsyncTask(this).execute("command", msg);
+	}
+	
+	private void sendMessageToSTB(String msg, String extra) {
+		new sendMessageToSTBAsyncTask(this).execute("command", msg, extra);
 	}
 	
 	private class sendMessageToSTBAsyncTask extends AsyncTask<String, String, Integer> {
@@ -176,6 +213,17 @@ public class MainActivity extends Activity implements OnClickListener {
 			else if (type.equals("command")) {
 				String cmd = params[1];
 				success =  mParentActivity.STBCom.stb_send(cmd);
+				Log.v(TAG, "sending to the STB: "+cmd);
+				
+				// sending text enter by the user
+				try {
+					if (params[2] != "") {
+						mParentActivity.STBCom.stb_send(params[2]);
+						Log.v(TAG, "sending to the STB: "+params[2]);
+					}
+				} catch (Exception e) {
+					Log.e(TAG, "ERROR:\n", e);
+				}
 				
 				if (! success) publishProgress("Error: sending command to the STB failed");
 			}

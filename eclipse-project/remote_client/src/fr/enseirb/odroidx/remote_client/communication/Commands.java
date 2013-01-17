@@ -14,4 +14,8 @@ public class Commands {
 	public static final String SELECT = "SELECT";
 	public static final String BACK = "BACK";
 	public static final String HOME = "HOME";
+	public static final String SOUND_MUTE = "SOUND_MUTE";
+	public static final String SOUND_PLUS = "SOUND_PLUS";
+	public static final String SOUND_MINUS = "SOUND_MINUS";
+	public static final String USER_TEXT = "USER_TEXT";
 }
