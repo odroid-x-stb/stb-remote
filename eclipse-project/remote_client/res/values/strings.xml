@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">STB remote control</string>
-
+    <string name="gesture_activity_name">Gesture control</string>
 	<string name="service_started">Control the STB via the WiFi</string>
 	<string name="service_label">STB remote control</string>
-	
+	<string name="change_view_to_std">Standard view</string>
+	<string name="change_view_to_ges">Gesture view</string>
 </resources>
