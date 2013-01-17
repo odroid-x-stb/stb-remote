@@ -39,16 +39,20 @@ public class RemoteControlService extends Service {
 	public static final int CMD__SELECT = 20;
 	public static final int CMD__HOME = 21;
 	public static final int CMD__BACK = 22;
+	public static final int CMD__SOUND_MUTE = 24;
+	public static final int CMD__SOUND_PLUS = 25;
+	public static final int CMD__SOUND_MINUS = 26;
+	public static final int CMD__USER_TEXT = 27;
 	
 	
-    final Messenger mMessenger = new Messenger(new IncomingHandler()); // Target we publish for clients to send messages to IncomingHandler.
+    final Messenger mMessenger = new Messenger(new IncomingHandler());
 
     @Override
     public IBinder onBind(Intent intent) {
         return mMessenger.getBinder();
     }
     
-    class IncomingHandler extends Handler { // Handler of incoming messages from clients.
+    class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -68,12 +72,11 @@ public class RemoteControlService extends Service {
     	for (int i=mClients.size()-1; i>=0; i--) {
             try {
                 Bundle b = new Bundle();
-                b.putString("msg", msg_value);
+                b.putString("msg_value", ""+msg_value);
                 Message msg = Message.obtain(null, msg_type);
                 msg.setData(b);
                 mClients.get(i).send(msg);
             } catch (RemoteException e) {
-                // The client is dead. Remove it from the list; we are going through the list from back to front so this is safe to do inside the loop.
                 mClients.remove(i);
             }
         }
@@ -86,14 +89,13 @@ public class RemoteControlService extends Service {
         ServerRunnable server_runnable = new ServerRunnable(this, MainActivity.COMMUNICATION_PORT);
         Thread server_thread = new Thread(server_runnable);
         server_thread.start();
-        
         Log.i(TAG, "Service Started.");
     }
         
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-        return START_STICKY; // run until explicitly stopped.
+        return START_STICKY;
     }
 
     @Override

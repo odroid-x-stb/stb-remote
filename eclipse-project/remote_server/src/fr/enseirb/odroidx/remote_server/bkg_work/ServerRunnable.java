@@ -44,14 +44,14 @@ public class ServerRunnable implements Runnable {
 		            }
 		        });
 		        
-		        // launch a new thread for client requests
+		        // launch a new thread for each new client - This thread will handle client commands/request from the remote control
 		        ClientRunnable client_runnable = new ClientRunnable(sock_client, rcs);
 		        Thread client_thread = new Thread(client_runnable);
 		        client_thread.start();
 		 	}
 			
 		} catch (Exception e) {
-			Log.e(TAG, "ERROR", e);
+			Log.e(TAG, "ERROR:\n", e);
 		}
 	}
 }

@@ -26,18 +26,31 @@ public class ClientRunnable implements Runnable {
 
 	@Override
 	public void run() {
-
-		STBCommunication STBCom = new STBCommunication(sock);
-    	
+		
+		final STBCommunication STBCom = new STBCommunication(sock);
+		
         while (sock.isConnected()) {
 	        
         	// waiting for data
         	final String msg = STBCom.stb_receive();
         	Log.i(TAG, "receive from client "+sock.hashCode()+": "+msg);
         	
+        	if (msg == null) {
+        		Log.e(TAG, "previous message received is null (loop:continue;)");
+        		continue;
+        	}
+        	
+        	// if its a user input text, we retrieve the text
+        	String user_textTmp = null;
+        	if (msg.equals(Commands.USER_TEXT)) {
+        		user_textTmp = STBCom.stb_receive();
+        	}
+        	final String user_text = user_textTmp;
+        	
         	// Send the key command to activities that listen to the service
 	        new Handler(Looper.getMainLooper()).post(new Runnable() {
-	            @Override
+
+				@Override
 	            public void run() {
 	        		if (msg.equals(Commands.VIDEO_PLAY)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PLAY, null);
 	        		else if (msg.equals(Commands.VIDEO_PAUSE)) rcs.sendMessageToUI(RemoteControlService.CMD__VIDEO_PAUSE, null);
@@ -51,6 +64,10 @@ public class ClientRunnable implements Runnable {
 	        		else if (msg.equals(Commands.MOVE_RIGHT)) rcs.sendMessageToUI(RemoteControlService.CMD__MOVE_RIGHT, null);
 	        		else if (msg.equals(Commands.BACK)) rcs.sendMessageToUI(RemoteControlService.CMD__BACK, null);
 	        		else if (msg.equals(Commands.HOME)) rcs.sendMessageToUI(RemoteControlService.CMD__HOME, null);
+	        		else if (msg.equals(Commands.SOUND_MUTE)) rcs.sendMessageToUI(RemoteControlService.CMD__SOUND_MUTE, null);
+	        		else if (msg.equals(Commands.SOUND_PLUS)) rcs.sendMessageToUI(RemoteControlService.CMD__SOUND_PLUS, null);
+	        		else if (msg.equals(Commands.SOUND_MINUS)) rcs.sendMessageToUI(RemoteControlService.CMD__SOUND_MINUS, null);
+	        		else if (msg.equals(Commands.USER_TEXT)) rcs.sendMessageToUI(RemoteControlService.CMD__USER_TEXT, user_text);
 	            }
 	        });
             

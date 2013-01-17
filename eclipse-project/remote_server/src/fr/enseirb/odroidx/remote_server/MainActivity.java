@@ -37,8 +37,14 @@ public class MainActivity extends Activity {
 	public ImageView button_select;    
 	public ImageView button_back;
 	public ImageView button_home;
+	public ImageView button_sound_mute;
+	public ImageView button_sound_plus;
+	public ImageView button_sound_minus;
+	public ImageView button_enter_text;
 	
 	public ArrayList<ImageView> buttons;
+	
+	STBRemoteControlCommunication stbrcc;
 	
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +62,7 @@ public class MainActivity extends Activity {
 		// start to run the server
 		textview_ip.setText(getLocalIpAddress()+" : "+COMMUNICATION_PORT);
 		
-		// ....
-	    // loading view components
+		// loading view components
 	    button_play = (ImageView) findViewById(R.id.button_play);
 	    button_pause = (ImageView) findViewById(R.id.button_pause);
 	    button_stop = (ImageView) findViewById(R.id.button_stop);
@@ -70,6 +75,10 @@ public class MainActivity extends Activity {
 	    button_select = (ImageView) findViewById(R.id.button_select);
 	    button_back = (ImageView) findViewById(R.id.button_back);
 	    button_home = (ImageView) findViewById(R.id.button_home);
+	    button_sound_mute = (ImageView) findViewById(R.id.button_sound_mute);
+	    button_sound_plus = (ImageView) findViewById(R.id.button_sound_plus);
+	    button_sound_minus = (ImageView) findViewById(R.id.button_sound_minus);
+	    button_enter_text = (ImageView) findViewById(R.id.button_enter_text);
 		
 	    buttons = new ArrayList<ImageView>();
 	    buttons.add(button_play);
@@ -84,8 +93,12 @@ public class MainActivity extends Activity {
 	    buttons.add(button_select);
 	    buttons.add(button_back);
 	    buttons.add(button_home);
+	    buttons.add(button_sound_mute);
+	    buttons.add(button_sound_plus);
+	    buttons.add(button_sound_minus);
+	    buttons.add(button_enter_text);
 	    
-	    STBRemoteControlCommunication stbrcc = new STBRemoteControlCommunication(this);
+	    stbrcc = new STBRemoteControlCommunication(this);
 	    stbrcc.doBindService();
 	}
 		
@@ -136,5 +149,12 @@ public class MainActivity extends Activity {
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, actions_array);
 		listview_actions.setAdapter(adapter);
 		listview_actions.setSelection(actions_array.length-1);
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		stbrcc.doUnbindService();
 	}
 }
