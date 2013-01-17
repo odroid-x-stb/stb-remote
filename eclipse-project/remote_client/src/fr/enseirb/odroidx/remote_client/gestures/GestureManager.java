@@ -21,11 +21,11 @@ public class GestureManager extends SimpleOnGestureListener {
 		} else if (e2.getX() - e1.getX() > SLIDE_MIN_DISTANCE && Math.abs(velocityX) > SLIDE_VELOCITY_THRESHOLD) {
 			receiver.slidingRight();
 		} else if (e1.getY() - e2.getY() > SLIDE_MIN_DISTANCE && Math.abs(velocityY) > SLIDE_VELOCITY_THRESHOLD) {
-			receiver.slidingTop();
+			receiver.slidingUp();
 		} else if (e2.getY() - e1.getY() > SLIDE_MIN_DISTANCE && Math.abs(velocityY) > SLIDE_VELOCITY_THRESHOLD) {
-			receiver.slidingBottom();
+			receiver.slidingDown();
 		}
-		return false;
+		return true;
 	}
 
 	@Override

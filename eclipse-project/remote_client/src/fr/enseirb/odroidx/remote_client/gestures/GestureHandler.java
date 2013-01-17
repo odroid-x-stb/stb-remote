@@ -4,8 +4,8 @@ public interface GestureHandler {
 
 	public boolean slidingLeft();
 	public boolean slidingRight();
-	public boolean slidingTop();
-	public boolean slidingBottom();
+	public boolean slidingUp();
+	public boolean slidingDown();
 	public boolean singleTap();
 	public boolean doubleTap();
 	
