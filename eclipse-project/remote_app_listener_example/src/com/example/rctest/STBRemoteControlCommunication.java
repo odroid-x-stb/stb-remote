@@ -1,6 +1,5 @@
 package com.example.rctest;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 public class STBRemoteControlCommunication {
 	
@@ -88,7 +86,14 @@ public class STBRemoteControlCommunication {
 	            	press_key(KeyEvent.KEYCODE_BACK);
 	            	break;
 	            case CMD__HOME:
-	            	press_key(KeyEvent.KEYCODE_HOME);
+	            	//press_key(KeyEvent.KEYCODE_HOME);
+	            	try {
+		            	Intent launchAppIntent = act.getPackageManager().getLaunchIntentForPackage("fr.enseirb.odroidx.home");
+		            	act.startActivity(launchAppIntent);
+	            	} 
+	            	catch(Exception e) {
+	            		Log.e(TAG, "Cannot lanch Home activity");
+	            	}
 	            	break;
 				case CMD__SOUND_MUTE:
 					press_key(KeyEvent.KEYCODE_MUTE);
