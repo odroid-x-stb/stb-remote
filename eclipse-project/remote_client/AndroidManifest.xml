@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -14,19 +14,25 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
+        android:label="@string/app_name">
         <activity
-            android:name="fr.enseirb.odroidx.remote_client.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <activity
+            android:name=".GestureActivity"
+            android:label="@string/gesture_activity_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
+        </activity>
+        <service
+            android:name=".communication.CommunicationService" >
+        </service>	
     </application>
-
 </manifest>
