@@ -13,8 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-
-	private static final String TAG = "MainActivity";
 	
 	private ListView listview_clients;
 	private ListView listview_actions;
