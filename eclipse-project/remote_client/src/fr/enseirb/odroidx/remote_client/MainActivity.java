@@ -4,11 +4,14 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -17,16 +20,19 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import fr.enseirb.odroidx.remote_client.UI.IPAddressKeyListener;
 import fr.enseirb.odroidx.remote_client.communication.Commands;
+import fr.enseirb.odroidx.remote_client.communication.CommunicationService;
+import fr.enseirb.odroidx.remote_client.communication.CommunicationServiceConnection;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunication;
+import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask;
+import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask.STBTaskListenner;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener, STBTaskListenner {
 
 	private static final String PREFS_NAME = "IPSTORAGE";
 	private static final String TAG = "MainActivity";
-	private static final int COMMUNICATION_PORT = 2000;
 	
-	private boolean isConnectedToSTB = false;
-    private STBCommunication STBCom = null;
+	//private boolean isConnectedToSTB = false;
+	private CommunicationServiceConnection serviceConnection = new CommunicationServiceConnection();
     
     private EditText edIP;
 	private LinearLayout buttons_layout;
@@ -109,20 +115,45 @@ public class MainActivity extends Activity implements OnClickListener {
 	    
 	    // hide buttons while not connected
 	    buttons_layout.setVisibility(View.GONE);
-	    
-	    // initialize STBCom
-	    STBCom = new STBCommunication();
 	}
 	
-    @Override
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    getMenuInflater().inflate(R.menu.main_activity, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.change_view:
+	        	Intent i = new Intent(getApplicationContext(), GestureActivity.class);
+	            startActivity(i);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	@Override
+    protected void onStart() {
+        super.onStart();
+        bindService(new Intent(getApplicationContext(), CommunicationService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+	@Override
     protected void onStop(){
     	super.onStop();
-
     	// save IP field for future executions
     	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
     	SharedPreferences.Editor editor = settings.edit();
     	editor.putString("ip", edIP.getText().toString());
     	editor.commit();
+    	// Unbind the service
+    	if (serviceConnection.isBound()) {
+    		unbindService(serviceConnection);
+    		serviceConnection.setBound(false);
+    	}
     }
     
 	@Override
@@ -146,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		else if(v==button_sound_plus) sendMessageToSTB(Commands.SOUND_PLUS);
 		else if(v==button_sound_minus) sendMessageToSTB(Commands.SOUND_MINUS);
 		else if(v==button_connect) {
-			if (! isConnectedToSTB) connectToTheSTB();
+			if (!serviceConnection.getSTBDriver().is_connected()) connectToTheSTB();
 			else disconnectFromTheSTB();
 		}
 		else if( v==button_enter_text) {
@@ -168,89 +199,48 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 	
 	private void connectToTheSTB() {
-		new sendMessageToSTBAsyncTask(this).execute("connect");
+		if (serviceConnection.isBound()) {
+			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, edIP.getText().toString());
+		}
 	}
 	
 	private void disconnectFromTheSTB() {
-		new sendMessageToSTBAsyncTask(this).execute("disconnect");
+		if (serviceConnection.isBound()) {
+			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_DISCONNECT);
+		}
 	}
 	
 	private void sendMessageToSTB(String msg) {
-		new sendMessageToSTBAsyncTask(this).execute("command", msg);
+		if (serviceConnection.isBound()) {
+			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_COMMAND, msg);
+		}
 	}
 	
 	private void sendMessageToSTB(String msg, String extra) {
-		new sendMessageToSTBAsyncTask(this).execute("command", msg, extra);
+		if (serviceConnection.isBound()) {
+			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_COMMAND, msg, extra);
+		}
 	}
-	
-	private class sendMessageToSTBAsyncTask extends AsyncTask<String, String, Integer> {
 
-		private MainActivity mParentActivity = null;
-		
-	    public sendMessageToSTBAsyncTask(MainActivity parentActivity) {
-	        mParentActivity = parentActivity;
-	    }
-		
-		@Override
-		protected Integer doInBackground(String... params) {
-			
-			boolean success;
-			String type = params[0];
-			
-			if (type.equals("connect")) {
-				String ip = mParentActivity.edIP.getText().toString();
-				success = mParentActivity.STBCom.stb_connect(ip, COMMUNICATION_PORT);
-				
-				if (! success) publishProgress("Error: Cannot connect to the STB (check your WiFi, IP, network configuration...)");
-				else publishProgress("Connected to the STB", "connected");
-			}
-			else if (type.equals("disconnect")) {
-				success = mParentActivity.STBCom.stb_disconnect();
-				
-				if (! success) publishProgress("Error: Cannot disconnect from the STB");
-				else publishProgress("Disconnected from the STB", "disconnected");
-			}
-			else if (type.equals("command")) {
-				String cmd = params[1];
-				success =  mParentActivity.STBCom.stb_send(cmd);
-				Log.v(TAG, "sending to the STB: "+cmd);
-				
-				// sending text enter by the user
-				try {
-					if (params[2] != "") {
-						mParentActivity.STBCom.stb_send(params[2]);
-						Log.v(TAG, "sending to the STB: "+params[2]);
-					}
-				} catch (Exception e) {
-					Log.e(TAG, "ERROR:\n", e);
-				}
-				
-				if (! success) publishProgress("Error: sending command to the STB failed");
-			}
-			
-			return null;
+	@Override
+	public void requestSucceed(String request, String message, String command) {
+		if (STBCommunication.REQUEST_CONNECT.equals(request)) {
+			buttons_layout.setVisibility(View.VISIBLE);
+			//isConnectedToSTB = true;
+		} else if (STBCommunication.REQUEST_DISCONNECT.equals(request)) {
+			buttons_layout.setVisibility(View.GONE);
+			//isConnectedToSTB = false;
 		}
-		
-		protected void onProgressUpdate(String... params) {
-			
-			Toast.makeText(mParentActivity.getApplicationContext(), params[0], Toast.LENGTH_LONG).show();
-			
-			if (params.length == 2) {
-				if (params[1].equals("connected")) {
-					mParentActivity.buttons_layout.setVisibility(View.VISIBLE);
-					mParentActivity.isConnectedToSTB = true;
-				} else {
-					mParentActivity.buttons_layout.setVisibility(View.GONE);
-					mParentActivity.isConnectedToSTB = false;
-				}
-			}
+		for (ImageView iv : buttons) {
+	    	iv.setBackgroundResource(R.color.black);
 	    }
-		
-		protected void onPostExecute(Integer result) {
-			
-			for (ImageView iv : buttons) {
-		    	iv.setBackgroundResource(R.color.black);
-		    }
-		}
+	}
+
+	@Override
+	public void requestFailed(String request, String message, String command) {
+		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+		for (ImageView iv : buttons) {
+	    	iv.setBackgroundResource(R.color.black);
+	    }
 	}
 }
