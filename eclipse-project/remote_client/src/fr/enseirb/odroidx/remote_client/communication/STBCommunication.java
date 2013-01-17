@@ -13,8 +13,14 @@ import android.util.Log;
 
 public class STBCommunication {
 	
-	private Socket sock;
+	public static final String REQUEST_CONNECT = "connect";
+	public static final String REQUEST_DISCONNECT = "disconnect";
+	public static final String REQUEST_COMMAND = "command";
+	public static final String REQUEST_UNKNOWN = "unknown";
+	
 	private static final String TAG = "STBCommunication";
+	
+	private Socket sock;
 	
 	public STBCommunication () {
 		sock = null;
