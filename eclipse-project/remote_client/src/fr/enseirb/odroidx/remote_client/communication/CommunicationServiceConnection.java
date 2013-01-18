@@ -7,8 +7,20 @@ import fr.enseirb.odroidx.remote_client.communication.CommunicationService.Commu
 
 public class CommunicationServiceConnection implements ServiceConnection {
 
+	public interface ComServiceListenner {
+		public void serviceBound();
+		public void serviceUnbind();
+	}
+	
+	private ComServiceListenner listenner;
 	private STBCommunication stbDriver;
 	private boolean bound = false;
+	
+	public CommunicationServiceConnection() {}
+	
+	public CommunicationServiceConnection(ComServiceListenner listenner) {
+		this.listenner = listenner;
+	}
 	
 	public STBCommunication getSTBDriver() {
 		return stbDriver;
@@ -27,10 +39,16 @@ public class CommunicationServiceConnection implements ServiceConnection {
 		CommunicationBinder binder = (CommunicationBinder) service;
 		stbDriver = binder.getSTBDriver();
 		bound = true;
+		if (listenner != null) {
+			listenner.serviceBound();
+		}
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName arg0) {
 		bound = false;
+		if (listenner != null) {
+			listenner.serviceUnbind();
+		}
 	}
 }

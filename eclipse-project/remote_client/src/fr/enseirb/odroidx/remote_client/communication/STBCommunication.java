@@ -1,6 +1,12 @@
 package fr.enseirb.odroidx.remote_client.communication;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import android.util.Log;
 
@@ -13,6 +19,8 @@ import android.util.Log;
 
 public class STBCommunication {
 	
+	public static final int COMMUNICATION_PORT = 2000;
+public static final String REQUEST_SCAN = "scan";
 	public static final String REQUEST_CONNECT = "connect";
 	public static final String REQUEST_DISCONNECT = "disconnect";
 	public static final String REQUEST_COMMAND = "command";
@@ -28,6 +36,38 @@ public class STBCommunication {
 	
 	public STBCommunication (Socket s) {
 		sock = s;
+	}
+	
+	public String scan_subnet(String localAddr, int port) {
+		String subnet = localAddr.substring(0, localAddr.lastIndexOf(".") + 1);
+		Socket socket = new Socket();
+		PrintWriter out = null;
+	    BufferedReader in = null;
+	    String response = null;
+	    String ipServer = null;
+		for (int d = 1 ; d < 255 ; d ++) {
+			String ip = subnet + d;
+			Log.d(TAG, "Scan ip: " + ip);
+			SocketAddress address = new InetSocketAddress(ip, port);
+			try {
+				socket.connect(address, 20);
+				out = new PrintWriter(socket.getOutputStream());
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				out.println("Hello");
+				while ((response = in.readLine()) != null) {
+					if ("World".equals(response)) {
+						ipServer = ip;
+						break;
+					}
+				}
+				in.close();
+				out.close();
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return ipServer;
 	}
 	
 	public boolean stb_connect(final String ip, final int port) {

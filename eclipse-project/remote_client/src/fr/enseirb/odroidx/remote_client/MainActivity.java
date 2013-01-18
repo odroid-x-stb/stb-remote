@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,17 +23,17 @@ import fr.enseirb.odroidx.remote_client.UI.IPAddressKeyListener;
 import fr.enseirb.odroidx.remote_client.communication.Commands;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationService;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationServiceConnection;
+import fr.enseirb.odroidx.remote_client.communication.CommunicationServiceConnection.ComServiceListenner;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunication;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask.STBTaskListenner;
 
-public class MainActivity extends Activity implements OnClickListener, STBTaskListenner {
+public class MainActivity extends Activity implements OnClickListener, STBTaskListenner, ComServiceListenner {
 
 	private static final String PREFS_NAME = "IPSTORAGE";
 	private static final String TAG = "MainActivity";
 	
-	//private boolean isConnectedToSTB = false;
-	private CommunicationServiceConnection serviceConnection = new CommunicationServiceConnection();
+	private CommunicationServiceConnection serviceConnection;
     
     private EditText edIP;
 	private LinearLayout buttons_layout;
@@ -62,6 +63,8 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 	
+		serviceConnection = new CommunicationServiceConnection(this);
+		
 	    // loading view components
 	    buttons_layout = (LinearLayout) findViewById(R.id.buttons_layout);
 		edIP = (EditText) findViewById(R.id.EditTextIp);
@@ -226,10 +229,8 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	public void requestSucceed(String request, String message, String command) {
 		if (STBCommunication.REQUEST_CONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.VISIBLE);
-			//isConnectedToSTB = true;
 		} else if (STBCommunication.REQUEST_DISCONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.GONE);
-			//isConnectedToSTB = false;
 		}
 		for (ImageView iv : buttons) {
 	    	iv.setBackgroundResource(R.color.black);
@@ -242,5 +243,36 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		for (ImageView iv : buttons) {
 	    	iv.setBackgroundResource(R.color.black);
 	    }
+	}
+	
+	public String getLocalIpAddress() {
+		WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		String ipBinary = null;
+		try {
+			ipBinary = Integer.toBinaryString(wm.getConnectionInfo().getIpAddress());
+		} catch (Exception e) {}
+		if (ipBinary != null) {
+			while(ipBinary.length() < 32) {
+				ipBinary = "0" + ipBinary;
+			}
+			String a = ipBinary.substring(0,8);
+			String b = ipBinary.substring(8,16);
+			String c = ipBinary.substring(16,24);
+			String d = ipBinary.substring(24,32);
+			String actualIpAddress = Integer.parseInt(d,2) + "." + Integer.parseInt(c,2) + "." + Integer.parseInt(b,2) + "." + Integer.parseInt(a,2);
+			return actualIpAddress;
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void serviceBound() {
+		new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_SCAN, getLocalIpAddress());
+	}
+
+	@Override
+	public void serviceUnbind() {
+		// TODO Auto-generated method stub
 	}
 }

@@ -11,7 +11,6 @@ public class STBCommunicationTask extends AsyncTask<String, Void, Boolean> {
 	}
 	
 	private static final String TAG = STBCommunicationTask.class.getSimpleName();
-	private static final int COMMUNICATION_PORT = 2000;
 	
 	private STBTaskListenner listenner;
 	private STBCommunication stbDriver;
@@ -28,10 +27,22 @@ public class STBCommunicationTask extends AsyncTask<String, Void, Boolean> {
 	protected Boolean doInBackground(String... params) {
 		boolean success = false;
 		String type = params[0];
-		if (STBCommunication.REQUEST_CONNECT.equals(type)) {
+		if (STBCommunication.REQUEST_SCAN.equals(type)) {
+			request = STBCommunication.REQUEST_SCAN;
+			String localIP = params[1];
+			String serverIP = stbDriver.scan_subnet(localIP, STBCommunication.COMMUNICATION_PORT);
+			success = (serverIP != null);
+			if (!success) {
+				message = "Error: Server not found";
+				return false;
+			} else {
+				message = "Server found: " + serverIP;
+				return true;
+			}
+		} else if (STBCommunication.REQUEST_CONNECT.equals(type)) {
 			request = STBCommunication.REQUEST_CONNECT;
 			String ip = params[1];
-			success = stbDriver.stb_connect(ip, COMMUNICATION_PORT);
+			success = stbDriver.stb_connect(ip, STBCommunication.COMMUNICATION_PORT);
 			if (!success) {
 				message = "Error: Cannot connect to the STB (check your WiFi, IP, network configuration...)";
 				return false;
