@@ -1,8 +1,6 @@
 package fr.enseirb.odroidx.remote_server.service;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import android.app.Service;
 import android.content.Intent;
