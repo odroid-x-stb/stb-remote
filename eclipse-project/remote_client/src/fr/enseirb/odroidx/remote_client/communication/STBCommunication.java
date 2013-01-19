@@ -19,133 +19,94 @@ import android.util.Log;
 
 public class STBCommunication {
 	
+	private static final String TAG = STBCommunication.class.getSimpleName();
+	
 	public static final int COMMUNICATION_PORT = 2000;
-public static final String REQUEST_SCAN = "scan";
+	public static final String REQUEST_SCAN = "scan";
 	public static final String REQUEST_CONNECT = "connect";
 	public static final String REQUEST_DISCONNECT = "disconnect";
 	public static final String REQUEST_COMMAND = "command";
 	public static final String REQUEST_UNKNOWN = "unknown";
 	
-	private static final String TAG = "STBCommunication";
-	
 	private Socket sock;
+	private PrintWriter out;
 	
-	public STBCommunication () {
-		sock = null;
-	}
-	
-	public STBCommunication (Socket s) {
-		sock = s;
-	}
-	
-	public String scan_subnet(String localAddr, int port) {
+	public String scanSubnet(String localAddr, int port) {
 		String subnet = localAddr.substring(0, localAddr.lastIndexOf(".") + 1);
-		Socket socket = new Socket();
+		Socket socket = null;
 		PrintWriter out = null;
 	    BufferedReader in = null;
-	    String response = null;
 	    String ipServer = null;
 		for (int d = 1 ; d < 255 ; d ++) {
 			String ip = subnet + d;
-			Log.d(TAG, "Scan ip: " + ip);
 			SocketAddress address = new InetSocketAddress(ip, port);
+			socket = new Socket();
 			try {
 				socket.connect(address, 20);
-				out = new PrintWriter(socket.getOutputStream());
+				socket.setSoTimeout(100);
+				out = new PrintWriter(socket.getOutputStream(), true);
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				out.println("Hello");
-				while ((response = in.readLine()) != null) {
-					if ("World".equals(response)) {
-						ipServer = ip;
-						break;
-					}
+				if ("World".equals(in.readLine())) {
+					ipServer = ip;
+					out.println("CLIENT_DISCONNECT");
+					in.close();
+					out.close();
+					socket.close();
+					break;
 				}
 				in.close();
 				out.close();
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e(TAG, e.getMessage());
 			}
 		}
+		Log.i(TAG, "scan ip server: " + ipServer);
 		return ipServer;
 	}
 	
-	public boolean stb_connect(final String ip, final int port) {
+	public boolean stbConnect(final String ip, final int port) {
         try {
             sock = new Socket(ip, port);
             sock.setReuseAddress(true);
+			out = new PrintWriter(sock.getOutputStream(), true);
             Log.i(TAG, "Connected to the STB");
             return true;
 		} catch (Exception e) {
-			Log.e(TAG, "ERROR: Opening socket failed", e);
+			Log.e(TAG, e.getMessage());
 			return false;
 		}
 	}
 	
-	public boolean stb_disconnect() {
-
-		if (! is_connected ()) {
-			Log.i(TAG, "ERROR: Trouble disconnecting: no connection");
-			return false;
-		}
-		
-		String msg = "CLIENT_DISCONNECT";
-		byte msg_to_bytes[] = msg.getBytes();
+	public boolean stbDisconnect() {
+		out.println("CLIENT_DISCONNECT");
 		try {
-			sock.getOutputStream().write(msg_to_bytes, 0, msg_to_bytes.length);
-		} catch (Exception e) {
-			Log.e(TAG, "ERROR: read the OutputStream failed");
-			return false;
-		}
-		
-		try {
+			out.close();
 			sock.close();
-			sock = null;
-			
 			Log.i(TAG, "Disconnected from the STB");
 			return true;
-		} catch (Exception e) {
-			Log.e(TAG, "ERROR: close the socket failed");
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage());
 			return false;
 		}
 	}
 	
-	public boolean stb_send(final String msg) {
-
-		if (! is_connected ()) {
-			Log.i(TAG, "ERROR: Trouble sending: no connection");
-			return false;
-		}
-		
-		byte msg_to_bytes[] = msg.getBytes();
+	public boolean stbSend(final String msg) {
 		try {
-			sock.getOutputStream().write(msg_to_bytes, 0, msg_to_bytes.length);
+			out.println(msg);
 			return true;
 		} catch (Exception e) {
-			Log.e(TAG, "ERROR:", e);
+			Log.e(TAG, e.getMessage());
 			return false;
 		}
 	}
-	
-	public String stb_receive() {
-		if (! is_connected ()) {
-			Log.i(TAG, "ERROR: Trouble receiving: no connection");
-			return null;
-		}
-		
-		try {
-	        byte[] buffer = new byte[1024];
-	        int readBytes = sock.getInputStream().read(buffer, 0, 1024);
-	        return new String(buffer, 0, readBytes, "UTF-8");
-		} catch (Exception e) {
-			Log.e(TAG, "ERROR:", e);
-		}
-		return null;
-	}
 
-	public boolean is_connected () {
-		if (sock == null) return false;
-		if (sock.isConnected()) return true;
-		else return false;
+	public boolean isConnected () {
+		if (sock != null && out != null) {
+			out.println("Test");
+			return !out.checkError();
+		}
+		return false;
 	}
 }

@@ -180,7 +180,7 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		else if(v==button_sound_plus) sendMessageToSTB(Commands.SOUND_PLUS);
 		else if(v==button_sound_minus) sendMessageToSTB(Commands.SOUND_MINUS);
 		else if(v==button_connect) {
-			if (!serviceConnection.getSTBDriver().is_connected()) connectToTheSTB();
+			if (!serviceConnection.getSTBDriver().isConnected()) connectToTheSTB();
 			else disconnectFromTheSTB();
 		}
 		else if( v==button_enter_text) {
@@ -227,7 +227,9 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 
 	@Override
 	public void requestSucceed(String request, String message, String command) {
-		if (STBCommunication.REQUEST_CONNECT.equals(request)) {
+		if (STBCommunication.REQUEST_SCAN.equals(request)) {
+			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, message);
+		} else if (STBCommunication.REQUEST_CONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.VISIBLE);
 		} else if (STBCommunication.REQUEST_DISCONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.GONE);

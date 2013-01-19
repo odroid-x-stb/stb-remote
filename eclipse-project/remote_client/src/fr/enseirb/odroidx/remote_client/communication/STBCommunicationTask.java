@@ -30,19 +30,19 @@ public class STBCommunicationTask extends AsyncTask<String, Void, Boolean> {
 		if (STBCommunication.REQUEST_SCAN.equals(type)) {
 			request = STBCommunication.REQUEST_SCAN;
 			String localIP = params[1];
-			String serverIP = stbDriver.scan_subnet(localIP, STBCommunication.COMMUNICATION_PORT);
+			String serverIP = stbDriver.scanSubnet(localIP, STBCommunication.COMMUNICATION_PORT);
 			success = (serverIP != null);
 			if (!success) {
 				message = "Error: Server not found";
 				return false;
 			} else {
-				message = "Server found: " + serverIP;
+				message = serverIP;
 				return true;
 			}
 		} else if (STBCommunication.REQUEST_CONNECT.equals(type)) {
 			request = STBCommunication.REQUEST_CONNECT;
 			String ip = params[1];
-			success = stbDriver.stb_connect(ip, STBCommunication.COMMUNICATION_PORT);
+			success = stbDriver.stbConnect(ip, STBCommunication.COMMUNICATION_PORT);
 			if (!success) {
 				message = "Error: Cannot connect to the STB (check your WiFi, IP, network configuration...)";
 				return false;
@@ -52,7 +52,7 @@ public class STBCommunicationTask extends AsyncTask<String, Void, Boolean> {
 			}
 		} else if (STBCommunication.REQUEST_DISCONNECT.equals(type)) {
 			request = STBCommunication.REQUEST_DISCONNECT;
-			success = stbDriver.stb_disconnect();
+			success = stbDriver.stbDisconnect();
 			if (!success) {
 				message = "Error: Cannot disconnect from the STB";
 				return false;
@@ -64,12 +64,12 @@ public class STBCommunicationTask extends AsyncTask<String, Void, Boolean> {
 			request = STBCommunication.REQUEST_COMMAND;
 			String cmd = params[1];
 			command = cmd;
-			success =  stbDriver.stb_send(cmd);
+			success =  stbDriver.stbSend(cmd);
 			Log.v(TAG, "sending to the STB: " + cmd);
 			// sending text enter by the user
 			try {
 				if (params.length > 2) {
-					success = stbDriver.stb_send(params[2]);
+					success = stbDriver.stbSend(params[2]);
 					Log.v(TAG, "sending to the STB: " + params[2]);
 				}
 			} catch (Exception e) {
