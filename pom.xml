@@ -43,7 +43,7 @@
   <modules>
     <module>remote_server</module>
     <module>remote_client</module>
-    <module>remote_listenner_exemple</module>
+    <module>remote_listenner_example</module>
   </modules>
 
   <!-- Uncomment to use scm support -->
