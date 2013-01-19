@@ -5,9 +5,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>remote_server</artifactId>
+  <artifactId>remote_listenner_example</artifactId>
   <packaging>apk</packaging>
-  <name>Remote :: Server</name>
+  <name>Remote :: Listenner Example</name>
   <description>STB remote server application</description>
   <url></url>
   
