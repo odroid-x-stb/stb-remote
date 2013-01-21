@@ -53,7 +53,7 @@ public class ClientRunnable implements Runnable {
 		String userTextTmp = null;
 		boolean userTextInput = false;
 		try {
-			while (socket.isConnected() && (messageTmp = in.readLine()) != null) {
+			while (socket != null && socket.isConnected() && (messageTmp = in.readLine()) != null) {
 				Log.d(TAG, "receive from client " + socket.hashCode() + ": " + messageTmp);
 				userTextTmp = null;
 				if ("Hello".equals(messageTmp)) {
@@ -66,7 +66,7 @@ public class ClientRunnable implements Runnable {
 				} else if (userTextInput) {
 					userTextTmp = messageTmp;
 					userTextInput = false;
-				}
+				} 
 				final String userText = userTextTmp;
 				final String message = messageTmp;
 				// Send the key command to activities that listen to the service
