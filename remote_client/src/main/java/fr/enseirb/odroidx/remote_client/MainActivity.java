@@ -22,7 +22,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +33,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import fr.enseirb.odroidx.remote_client.UI.IPAddressKeyListener;
 import fr.enseirb.odroidx.remote_client.communication.Commands;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationService;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationServiceConnection;
@@ -45,14 +43,14 @@ import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask.STBTa
 
 public class MainActivity extends Activity implements OnClickListener, STBTaskListenner, ComServiceListenner {
 
-	private static final String PREFS_NAME = "IPSTORAGE";
+	//private static final String PREFS_NAME = "IPSTORAGE";
 	private static final String TAG = "MainActivity";
 	
 	private CommunicationServiceConnection serviceConnection;
     
-    private EditText edIP;
+    //private EditText edIP;
 	private LinearLayout buttons_layout;
-	private ImageView button_connect;
+	//private ImageView button_connect;
 	private ImageView button_play;
 	private ImageView button_pause;
 	private ImageView button_stop;
@@ -82,8 +80,8 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		
 	    // loading view components
 	    buttons_layout = (LinearLayout) findViewById(R.id.buttons_layout);
-		edIP = (EditText) findViewById(R.id.EditTextIp);
-	    button_connect = (ImageView) findViewById(R.id.button_connect);
+		//edIP = (EditText) findViewById(R.id.EditTextIp);
+	   // button_connect = (ImageView) findViewById(R.id.button_connect);
 	    button_play = (ImageView) findViewById(R.id.button_play);
 	    button_pause = (ImageView) findViewById(R.id.button_pause);
 	    button_stop = (ImageView) findViewById(R.id.button_stop);
@@ -103,7 +101,7 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	    
 	    // setting listeners
 	    buttons = new ArrayList<ImageView>();
-	    buttons.add(button_connect);
+	    //buttons.add(button_connect);
 	    buttons.add(button_play);
 	    buttons.add(button_pause);
 	    buttons.add(button_stop);
@@ -126,10 +124,10 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	    }
 		
 		// load Previous IP used
-	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-	    String ip = settings.getString("ip", null);
-	    edIP.setText(ip);
-	    edIP.setKeyListener(IPAddressKeyListener.getInstance());
+//	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+//	    String ip = settings.getString("ip", null);
+//	    edIP.setText(ip);
+//	    edIP.setKeyListener(IPAddressKeyListener.getInstance());
 	    
 	    // hide buttons while not connected
 	    buttons_layout.setVisibility(View.GONE);
@@ -163,10 +161,10 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
     protected void onStop(){
     	super.onStop();
     	// save IP field for future executions
-    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-    	SharedPreferences.Editor editor = settings.edit();
-    	editor.putString("ip", edIP.getText().toString());
-    	editor.commit();
+//    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+//    	SharedPreferences.Editor editor = settings.edit();
+//    	editor.putString("ip", edIP.getText().toString());
+//    	editor.commit();
     	// Unbind the service
     	if (serviceConnection.isBound()) {
     		unbindService(serviceConnection);
@@ -194,10 +192,10 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		else if(v==button_sound_mute) sendMessageToSTB(Commands.SOUND_MUTE);
 		else if(v==button_sound_plus) sendMessageToSTB(Commands.SOUND_PLUS);
 		else if(v==button_sound_minus) sendMessageToSTB(Commands.SOUND_MINUS);
-		else if(v==button_connect) {
-			if (!serviceConnection.getSTBDriver().isConnected()) connectToTheSTB();
-			else disconnectFromTheSTB();
-		}
+//		else if(v==button_connect) {
+//			if (!serviceConnection.getSTBDriver().isConnected()) connectToTheSTB();
+//			else disconnectFromTheSTB();
+//		}
 		else if( v==button_enter_text) {
 
 			AlertDialog.Builder editalert = new AlertDialog.Builder(this);
@@ -216,17 +214,17 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		}
 	}
 	
-	private void connectToTheSTB() {
-		if (serviceConnection.isBound()) {
-			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, edIP.getText().toString());
-		}
-	}
-	
-	private void disconnectFromTheSTB() {
-		if (serviceConnection.isBound()) {
-			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_DISCONNECT);
-		}
-	}
+//	private void connectToTheSTB() {
+//		if (serviceConnection.isBound()) {
+//			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, edIP.getText().toString());
+//		}
+//	}
+//	
+//	private void disconnectFromTheSTB() {
+//		if (serviceConnection.isBound()) {
+//			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_DISCONNECT);
+//		}
+//	}
 	
 	private void sendMessageToSTB(String msg) {
 		if (serviceConnection.isBound()) {
