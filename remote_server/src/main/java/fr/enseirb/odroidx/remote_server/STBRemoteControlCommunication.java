@@ -58,6 +58,7 @@ public class STBRemoteControlCommunication {
 	private static final int MSG__UNREGISTER_CLIENT = 2;
 
 	private MainActivity act;
+	private boolean[] escape = {false, false};
 
 	public STBRemoteControlCommunication (MainActivity a) {
 		act = a;
@@ -66,7 +67,21 @@ public class STBRemoteControlCommunication {
 	class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			
+			Log.d(TAG, "Message: " + msg.what);
+			Log.d(TAG, "escape: " + escape[0] + ", " + escape[1]);
+			if (msg.what == CMD__MOVE_DOWN) {
+				escape[0] = true;
+				Log.d(TAG, "escape1");
+			} else if (msg.what == CMD__MOVE_UP && escape[0]) {
+				escape[1] = true;
+				Log.d(TAG, "escape2");
+			} else if (msg.what == CMD__BACK && escape[1]) {
+				Log.d(TAG, "escape!");
+				act.finish();
+			} else if (msg.what != RemoteControlService.MSG__PRINT_NEW_CLIENT_ACTION) {
+				escape[0] = false;
+				escape[1] = false;
+			}
 			switch (msg.what) {
 				case RemoteControlService.MSG__PRINT_NEW_CLIENT:
 					String client = msg.getData().getString("msg_value");
