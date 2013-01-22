@@ -17,13 +17,13 @@ package fr.enseirb.odroidx.remote_client;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +33,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import fr.enseirb.odroidx.remote_client.UI.ScanFailDialog;
+import fr.enseirb.odroidx.remote_client.UI.ScanningDialog;
 import fr.enseirb.odroidx.remote_client.communication.Commands;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationService;
 import fr.enseirb.odroidx.remote_client.communication.CommunicationServiceConnection;
@@ -41,16 +43,14 @@ import fr.enseirb.odroidx.remote_client.communication.STBCommunication;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask;
 import fr.enseirb.odroidx.remote_client.communication.STBCommunicationTask.STBTaskListenner;
 
-public class MainActivity extends Activity implements OnClickListener, STBTaskListenner, ComServiceListenner {
+public class MainActivity extends FragmentActivity implements OnClickListener, STBTaskListenner, ComServiceListenner {
 
-	//private static final String PREFS_NAME = "IPSTORAGE";
 	private static final String TAG = "MainActivity";
 	
-	private CommunicationServiceConnection serviceConnection;
-    
-    //private EditText edIP;
+	private CommunicationServiceConnection serviceConnection;    
+	private ScanningDialog scanningDialog = new ScanningDialog();
+	private ScanFailDialog scanFailDialog = new ScanFailDialog();
 	private LinearLayout buttons_layout;
-	//private ImageView button_connect;
 	private ImageView button_play;
 	private ImageView button_pause;
 	private ImageView button_stop;
@@ -69,6 +69,7 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	private ImageView button_enter_text;
 	
 	private ArrayList<ImageView> buttons;
+	private boolean connected;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +81,6 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		
 	    // loading view components
 	    buttons_layout = (LinearLayout) findViewById(R.id.buttons_layout);
-		//edIP = (EditText) findViewById(R.id.EditTextIp);
-	   // button_connect = (ImageView) findViewById(R.id.button_connect);
 	    button_play = (ImageView) findViewById(R.id.button_play);
 	    button_pause = (ImageView) findViewById(R.id.button_pause);
 	    button_stop = (ImageView) findViewById(R.id.button_stop);
@@ -101,7 +100,6 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	    
 	    // setting listeners
 	    buttons = new ArrayList<ImageView>();
-	    //buttons.add(button_connect);
 	    buttons.add(button_play);
 	    buttons.add(button_pause);
 	    buttons.add(button_stop);
@@ -122,20 +120,14 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	    for (ImageView iv : buttons) {
 	    	iv.setOnClickListener(this);
 	    }
-		
-		// load Previous IP used
-//	    SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-//	    String ip = settings.getString("ip", null);
-//	    edIP.setText(ip);
-//	    edIP.setKeyListener(IPAddressKeyListener.getInstance());
 	    
-	    // hide buttons while not connected
 	    buttons_layout.setVisibility(View.GONE);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    getMenuInflater().inflate(R.menu.main_activity, menu);
+	    menu.findItem(R.id.change_view).setVisible(connected);
 	    return true;
 	}
 	
@@ -160,12 +152,6 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	@Override
     protected void onStop(){
     	super.onStop();
-    	// save IP field for future executions
-//    	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-//    	SharedPreferences.Editor editor = settings.edit();
-//    	editor.putString("ip", edIP.getText().toString());
-//    	editor.commit();
-    	// Unbind the service
     	if (serviceConnection.isBound()) {
     		unbindService(serviceConnection);
     		serviceConnection.setBound(false);
@@ -192,10 +178,6 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		else if(v==button_sound_mute) sendMessageToSTB(Commands.SOUND_MUTE);
 		else if(v==button_sound_plus) sendMessageToSTB(Commands.SOUND_PLUS);
 		else if(v==button_sound_minus) sendMessageToSTB(Commands.SOUND_MINUS);
-//		else if(v==button_connect) {
-//			if (!serviceConnection.getSTBDriver().isConnected()) connectToTheSTB();
-//			else disconnectFromTheSTB();
-//		}
 		else if( v==button_enter_text) {
 
 			AlertDialog.Builder editalert = new AlertDialog.Builder(this);
@@ -214,18 +196,6 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		}
 	}
 	
-//	private void connectToTheSTB() {
-//		if (serviceConnection.isBound()) {
-//			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, edIP.getText().toString());
-//		}
-//	}
-//	
-//	private void disconnectFromTheSTB() {
-//		if (serviceConnection.isBound()) {
-//			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_DISCONNECT);
-//		}
-//	}
-	
 	private void sendMessageToSTB(String msg) {
 		if (serviceConnection.isBound()) {
 			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_COMMAND, msg);
@@ -242,8 +212,11 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	public void requestSucceed(String request, String message, String command) {
 		if (STBCommunication.REQUEST_SCAN.equals(request)) {
 			new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_CONNECT, message);
+			scanningDialog.dismiss();
 		} else if (STBCommunication.REQUEST_CONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.VISIBLE);
+			connected = true;
+			invalidateOptionsMenu();
 		} else if (STBCommunication.REQUEST_DISCONNECT.equals(request)) {
 			buttons_layout.setVisibility(View.GONE);
 		}
@@ -255,6 +228,10 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 	@Override
 	public void requestFailed(String request, String message, String command) {
 		Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+		if (STBCommunication.REQUEST_SCAN.equals(request)) {
+			scanningDialog.dismiss();
+			scanFailDialog.show(getSupportFragmentManager(), "scanfaildialog");
+		}
 		for (ImageView iv : buttons) {
 	    	iv.setBackgroundResource(R.color.black);
 	    }
@@ -281,13 +258,20 @@ public class MainActivity extends Activity implements OnClickListener, STBTaskLi
 		}
 	}
 
+	public void lauchScan() {
+		new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_SCAN, getLocalIpAddress());
+		scanningDialog.show(getSupportFragmentManager(), "ScanDialog");
+	}
+	
 	@Override
 	public void serviceBound() {
-		new STBCommunicationTask(this, serviceConnection.getSTBDriver()).execute(STBCommunication.REQUEST_SCAN, getLocalIpAddress());
+		if (!serviceConnection.getSTBDriver().isConnected()) {
+			lauchScan();
+		}
 	}
 
 	@Override
 	public void serviceUnbind() {
-		// TODO Auto-generated method stub
+		connected = false;
 	}
 }

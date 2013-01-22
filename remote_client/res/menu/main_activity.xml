@@ -19,5 +19,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/change_view"
           android:title="@string/change_view_to_ges"
-          android:showAsAction="always" />
+          android:showAsAction="always" 
+          android:visible="false"/>
 </menu>
