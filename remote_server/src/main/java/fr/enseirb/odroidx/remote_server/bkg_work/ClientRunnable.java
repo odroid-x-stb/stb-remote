@@ -95,7 +95,9 @@ public class ClientRunnable implements Runnable {
 				new Handler(Looper.getMainLooper()).post(new Runnable() {
 					@Override
 					public void run() {
-						rcs.sendMessageToUI(RemoteControlService.MSG__PRINT_NEW_CLIENT_ACTION, message);
+						if (!"Test".equals(message)) {
+							rcs.sendMessageToUI(RemoteControlService.MSG__PRINT_NEW_CLIENT_ACTION, message);
+						}
 					}
 				});
 				// send feedback
