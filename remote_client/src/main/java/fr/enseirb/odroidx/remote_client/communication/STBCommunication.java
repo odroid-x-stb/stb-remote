@@ -95,26 +95,32 @@ public class STBCommunication {
 	}
 	
 	public boolean stbDisconnect() {
-		out.println("CLIENT_DISCONNECT");
-		try {
-			out.close();
-			sock.close();
-			Log.i(TAG, "Disconnected from the STB");
-			return true;
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage());
-			return false;
+		if (isConnected()) {
+			out.println("CLIENT_DISCONNECT");
+			try {
+				out.close();
+				sock.close();
+				Log.i(TAG, "Disconnected from the STB");
+				return true;
+			} catch (IOException e) {
+				Log.e(TAG, e.getMessage());
+				return false;
+			}
 		}
+		return false;
 	}
-	
+
 	public boolean stbSend(final String msg) {
-		try {
-			out.println(msg);
-			return true;
-		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-			return false;
+		if (isConnected()) {
+			try {
+				out.println(msg);
+				return true;
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public boolean isConnected () {
