@@ -158,8 +158,7 @@ public class STBRemoteControlCommunication {
 					Toast.makeText(act, "USER_TEXT value: "+user_text, Toast.LENGTH_LONG).show();
 					break;
 				default:
-					super.handleMessage(msg);
-					
+					super.handleMessage(msg);		
 			}
 		}
 	}

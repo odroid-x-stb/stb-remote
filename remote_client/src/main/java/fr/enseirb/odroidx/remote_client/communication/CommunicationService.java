@@ -40,18 +40,18 @@ public class CommunicationService extends Service implements STBTaskListenner {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		new STBCommunicationTask(this, stbDriver).execute(STBCommunication.REQUEST_DISCONNECT);
+		if (stbDriver.isConnected()) {
+			new STBCommunicationTask(this, stbDriver).execute(STBCommunication.REQUEST_DISCONNECT);
+		}
 	}
 
 	@Override
 	public void requestSucceed(String request, String message, String command) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void requestFailed(String request, String message, String command) {
 		// TODO Auto-generated method stub
-		
 	}
 }
