@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>remote_client</artifactId>
+  <artifactId>remote-client</artifactId>
   <packaging>apk</packaging>
   <name>Remote :: Client</name>
   <description>STB remote client application</description>
@@ -17,29 +17,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  
-  <!-- Uncomment to use scm support -->
-  <!--
-  <scm>
-    <connection>scm:git://host/repo.git</connection>
-    <developerConnection>scm:git://host/repo.git</developerConnection>
-    <url>http://host}/repo</url>
-  </scm>
-  -->
-  <!--
-  <issueManagement>
-    <url>https://host/repo/issues</url>
-    <system>Issues</system>
-  </issueManagement>
-  -->
-  
-  <!-- Uncomment to use ci support -->
-  <!--
-  <ciManagement>
-    <system>jenkins</system>
-    <url>http://host/jenkins/joburl</url>
-  </ciManagement>
-  -->
 
   <properties>
   	<headerdir>${project.parent.basedir}</headerdir>
