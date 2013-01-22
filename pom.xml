@@ -46,29 +46,6 @@
     <module>remote_listenner_example</module>
   </modules>
 
-  <!-- Uncomment to use scm support -->
-  <!--
-      <scm>
-      <connection>scm:git://host/repo.git</connection>
-      <developerConnection>scm:git://host/repo.git</developerConnection>
-      <url>http://host}/repo</url>
-      </scm>
-  -->
-  <!--
-      <issueManagement>
-      <url>https://host/repo/issues</url>
-      <system>Issues</system>
-      </issueManagement>
-  -->
-  
-  <!-- Uncomment to use ci support -->
-  <!--
-      <ciManagement>
-      <system>jenkins</system>
-      <url>http://host/jenkins/joburl</url>
-      </ciManagement>
-  -->
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -102,18 +79,10 @@
     <plugin.release.version>2.3.2</plugin.release.version>
     <plugin.source.version>2.1.2</plugin.source.version>
     <plugin.surefire.version>2.12.2</plugin.surefire.version>
-    
-    <maven-checkstyle-plugin.configLocation>reporting/checkstyle.xml</maven-checkstyle-plugin.configLocation>
-    <maven-pmd-plugin.configLocation>reporting/pmd.xml</maven-pmd-plugin.configLocation>
 
     <headerdir>${project.basedir}</headerdir>
 
     <proguard.skip>false</proguard.skip>
-    <checkstyle.skip>false</checkstyle.skip>
-    <findbugs.skip>false</findbugs.skip>
-    <cobertura.skip>false</cobertura.skip>
-    <javadocs.skip>false</javadocs.skip>
-    <pmd.skip>false</pmd.skip>    
   </properties>
 
   <dependencyManagement>
@@ -124,6 +93,11 @@
 	<version>${platform.version}</version>
 	<scope>provided</scope>
       </dependency>
+      <dependency>
+	<groupId>com.google.android</groupId>
+	<artifactId>support-v4</artifactId>
+	<version>r7</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -132,6 +106,10 @@
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>support-v4</artifactId>
     </dependency>
   </dependencies>
 
@@ -301,7 +279,7 @@
 	  <header>${headerdir}/HEADER</header>
 	  <strictCheck>true</strictCheck>
 	  <properties>
-	    <owner>Enseirb, Sylvain Bilange, Fabien Fleurey</owner>
+	    <owner>Sylvain Bilange, Fabien Fleurey</owner>
 	    <year>2012</year>
 	    <email>fabien@fleurey.com</email>
 	  </properties>
@@ -412,98 +390,4 @@
       </plugin>
     </plugins>
   </build>
-  
-  <reporting> 
-    <plugins>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-project-info-reports-plugin</artifactId>
-	<version>${plugin.project-info-reports.version}</version>
-	<configuration>
-	  <dependencyDetailsEnabled>true</dependencyDetailsEnabled>
-	  <dependencyLocationsEnabled>true</dependencyLocationsEnabled>
-	</configuration>
-      </plugin>
-      <!-- Uncomment if you have set a scm connection -->
-      <!--
-	  <plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-changelog-plugin</artifactId>
-	  <version>${plugin.maven-changelog.version}</version>
-	  <configuration>
-	  <skip>${scm.disable}</skip>
-	  <type>range</type>
-	  <range>30</range>
-	  <displayFileDetailUrl>${project.scm.url}/tree/master/%FILE%</displayFileDetailUrl>
-	  <headingDateFormat>MM-dd-yyyy</headingDateFormat>
-	  <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
-	  </configuration>
-	  </plugin>
-      -->
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jxr-plugin</artifactId>
-	<version>${plugin.jxr.version}</version>
-      </plugin>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-checkstyle-plugin</artifactId>
-	<version>${plugin.checkstyle.version}</version>
-	<configuration>
-	  <skip>${checkstyle.skip}</skip>
-	  <configLocation>${maven-checkstyle-plugin.configLocation}</configLocation>
-	  <failsOnError>false</failsOnError>
-	  <enableRulesSummary>true</enableRulesSummary>
-	  <includeTestSourceDirectory>true</includeTestSourceDirectory>
-	</configuration>
-      </plugin>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-javadoc-plugin</artifactId>
-	<version>${plugin.javadoc.version}</version>
-	<configuration>
-	  <skip>${javadocs.skip}</skip>
-	  <failOnError>false</failOnError>
-	</configuration>
-      </plugin>
-      <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>findbugs-maven-plugin</artifactId>
-	<version>${plugin.findbugs-maven.version}</version>
-	<configuration>
-          <targetJdk>${jdk.version}</targetJdk>
-	  <skip>${findbugs.skip}</skip>
-	  <xmlOutput>true</xmlOutput>
-	</configuration>
-      </plugin>
-      <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-pmd-plugin</artifactId>
-	<version>${plugin.pmd-plugin.version}</version>
-	<configuration>
-	  <skip>${pmd.skip}</skip>
-	  <targetJdk>${jdk.version}</targetJdk>
-	  <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-	  <rulesets>
-	    <ruleset>${maven-pmd-plugin.configLocation}</ruleset>
-	  </rulesets>
-	  <failOnViolation>false</failOnViolation>
-	</configuration>
-      </plugin>
-      <plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>versions-maven-plugin</artifactId>
-	<version>${plugin.versions-maven.version}</version>
-	<reportSets>
-	  <reportSet>
-	    <reports>
-	      <report>dependency-updates-report</report>
-	      <report>plugin-updates-report</report>
-	      <report>property-updates-report</report>
-	    </reports>
-	  </reportSet>
-	</reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
 </project>
