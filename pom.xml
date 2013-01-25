@@ -82,7 +82,7 @@
 
     <headerdir>${project.basedir}</headerdir>
 
-    <proguard.skip>false</proguard.skip>
+    <proguard.skip>true</proguard.skip>
   </properties>
 
   <dependencyManagement>
